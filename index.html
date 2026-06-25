@@ -3,415 +3,981 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NORTHSTAR // Command Center</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Astylez Auto - Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --accent:#00f0ff;--accent2:#6366f1;--accent3:#a855f7;
-  --neon:0 0 12px var(--accent),0 0 40px color-mix(in srgb,var(--accent) 40%,transparent);
-  --neon2:0 0 12px var(--accent2),0 0 40px color-mix(in srgb,var(--accent2) 40%,transparent);
-  --soft:color-mix(in srgb,var(--accent) 12%,transparent);
-  --line:color-mix(in srgb,var(--accent) 28%,transparent);
-  --text:#f0f6ff;--dim:#94a8c8;--faint:#576b8a;
-  --win:#34ffc6;--lose:#ff4f7a;--warn:#ffc234;
-  --glass-bg:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  --glass-border:rgba(255,255,255,.12);
-  --f-display:"Orbitron",sans-serif;
-  --f-body:"Inter",system-ui,sans-serif;
-  --f-mono:"JetBrains Mono",monospace;
+--accent:#00f0ff;--accent-rgb:0,240,255;
+--secondary:#6366f1;--secondary-rgb:99,102,241;
+--purple:#a855f7;--purple-rgb:168,85,247;
+--bg:#0a0a0f;--surface:rgba(255,255,255,0.03);
+--glass:rgba(255,255,255,0.05);--glass-border:rgba(255,255,255,0.1);
+--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#475569;
+--success:#10b981;--warning:#f59e0b;--danger:#ef4444;
+--radius:12px;--radius-lg:16px;--radius-xl:24px;
+--font-display:'Orbitron',sans-serif;
+--font-body:'Inter',sans-serif;
+--font-mono:'JetBrains Mono',monospace;
 }
-*{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-html,body{min-height:100vh}
-body{font-family:var(--f-body);color:var(--text);background:#020408;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.5}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
-::selection{background:color-mix(in srgb,var(--accent) 40%,transparent);color:#fff}
-
-/* === CANVAS === */
-.universe{position:fixed;inset:0;z-index:0;overflow:hidden}
-.universe::before{content:"";position:absolute;inset:0;
-  background:radial-gradient(ellipse 140% 70% at 50% -20%,rgba(99,102,241,.15),transparent 60%),
-  radial-gradient(ellipse 100% 60% at 80% 110%,rgba(0,240,255,.08),transparent 50%),
-  radial-gradient(ellipse 80% 50% at 10% 90%,rgba(168,85,247,.08),transparent 50%)}
-.stars{position:absolute;inset:0;background-image:
-  radial-gradient(1px 1px at 10% 20%,rgba(255,255,255,.6),transparent),
-  radial-gradient(1px 1px at 30% 80%,rgba(255,255,255,.4),transparent),
-  radial-gradient(1.5px 1.5px at 50% 10%,rgba(255,255,255,.7),transparent),
-  radial-gradient(1px 1px at 70% 60%,rgba(255,255,255,.3),transparent),
-  radial-gradient(1px 1px at 90% 30%,rgba(255,255,255,.5),transparent),
-  radial-gradient(1.5px 1.5px at 15% 55%,rgba(255,255,255,.5),transparent),
-  radial-gradient(1px 1px at 85% 85%,rgba(255,255,255,.4),transparent),
-  radial-gradient(1px 1px at 45% 40%,rgba(255,255,255,.3),transparent),
-  radial-gradient(2px 2px at 60% 95%,rgba(0,240,255,.8),transparent),
-  radial-gradient(2px 2px at 25% 5%,rgba(168,85,247,.6),transparent);
-  animation:twinkle 8s ease-in-out infinite alternate}
-@keyframes twinkle{from{opacity:.6}to{opacity:1}}
-
-/* Aurora orbs */
-.orb{position:absolute;border-radius:50%;filter:blur(80px);mix-blend-mode:screen;animation:orbit 30s ease-in-out infinite;opacity:.5}
-.orb:nth-child(1){width:50vw;height:50vw;left:-15vw;top:-10vh;background:radial-gradient(circle,var(--accent),transparent 65%)}
-.orb:nth-child(2){width:45vw;height:45vw;right:-10vw;top:20vh;background:radial-gradient(circle,var(--accent2),transparent 65%);animation-delay:-10s;animation-duration:35s}
-.orb:nth-child(3){width:40vw;height:40vw;left:20vw;bottom:-20vh;background:radial-gradient(circle,var(--accent3),transparent 65%);animation-delay:-20s;animation-duration:40s}
-@keyframes orbit{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(5vw,3vh) scale(1.15)}50%{transform:translate(-3vw,6vh) scale(.9)}75%{transform:translate(4vw,-4vh) scale(1.1)}}
-
-/* Grid overlay */
-.grid-overlay{position:absolute;inset:0;opacity:.3;
-  background-image:linear-gradient(color-mix(in srgb,var(--accent) 6%,transparent) 1px,transparent 1px),
-  linear-gradient(90deg,color-mix(in srgb,var(--accent) 6%,transparent) 1px,transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000 20%,transparent 70%);
-  animation:gridPulse 6s ease-in-out infinite alternate}
-@keyframes gridPulse{from{opacity:.2}to{opacity:.4}}
-
-/* Scan line */
-.scanline{position:absolute;inset:0;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,240,255,.015) 2px 4px);
-  animation:scanDrift 12s linear infinite}
-@keyframes scanDrift{from{background-position:0 0}to{background-position:0 120px}}
-
-/* === LAYOUT === */
-.page{position:relative;z-index:2;max-width:1320px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
-
-/* === HUD HEADER === */
-.hud{position:sticky;top:0;z-index:100;padding:20px 0;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  background:linear-gradient(180deg,rgba(2,4,8,.9),rgba(2,4,8,.6));
-  -webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%)}
-.hud::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),var(--accent3),transparent);opacity:.6}
-.brand{display:flex;align-items:center;gap:14px}
-.logo{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;position:relative;
-  background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));
-  box-shadow:var(--neon);animation:logoGlow 4s ease-in-out infinite alternate}
-@keyframes logoGlow{from{box-shadow:0 0 12px var(--accent),0 0 30px color-mix(in srgb,var(--accent) 30%,transparent)}to{box-shadow:0 0 20px var(--accent2),0 0 50px color-mix(in srgb,var(--accent2) 40%,transparent)}}
-.logo span{font-family:var(--f-display);font-weight:900;font-size:18px;color:#020408}
-.ident b{font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:2px;display:block;text-transform:uppercase}
-.ident small{font-size:10px;color:var(--faint);letter-spacing:3px;text-transform:uppercase;font-weight:500}
-.hud-right{display:flex;align-items:center;gap:18px}
-.status{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:20px;
-  background:rgba(0,240,255,.06);border:1px solid rgba(0,240,255,.2);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent)}
-.status .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:var(--neon);animation:livePulse 2s infinite}
-@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-.clock{font-family:var(--f-mono);font-size:13px;color:var(--accent);letter-spacing:1px;opacity:.8}
-
-/* === SECTIONS === */
-.section{margin:40px 0}
-.section-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
-.section-icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,transparent),color-mix(in srgb,var(--accent2) 20%,transparent));
-  border:1px solid rgba(255,255,255,.1)}
-.section-icon svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:2}
-.section-title{font-family:var(--f-display);font-size:clamp(16px,2.5vw,22px);font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  background:linear-gradient(90deg,var(--text),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.section-sub{font-size:12px;color:var(--faint);margin-left:auto;letter-spacing:.5px}
-
-/* === GLASS CARDS === */
-.glass{position:relative;background:var(--glass-bg);
-  border:1px solid var(--glass-border);border-radius:20px;overflow:hidden;
-  -webkit-backdrop-filter:blur(30px) saturate(140%);backdrop-filter:blur(30px) saturate(140%);
-  box-shadow:0 20px 60px -20px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
-  transition:border-color .3s,box-shadow .3s,transform .3s}
-.glass:hover{border-color:color-mix(in srgb,var(--accent) 40%,transparent);
-  box-shadow:0 20px 60px -20px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.15),0 0 40px -10px color-mix(in srgb,var(--accent) 30%,transparent);
-  transform:translateY(-2px)}
-.glass::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent 10%,rgba(255,255,255,.2) 50%,transparent 90%)}
-.glass .shine{position:absolute;top:-50%;left:-50%;width:200%;height:200%;pointer-events:none;
-  background:conic-gradient(from 180deg,transparent 70%,rgba(255,255,255,.03) 80%,transparent 90%);
-  animation:shineRotate 20s linear infinite}
-@keyframes shineRotate{to{transform:rotate(360deg)}}
-.pad{padding:24px}
-
-/* === KPI CARDS === */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.kpi{position:relative;overflow:hidden}
-.kpi .glow-bar{position:absolute;bottom:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:.6;
-  box-shadow:0 0 20px var(--accent)}
-.kpi .label{font-size:11px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;font-weight:500;
-  display:flex;align-items:center;gap:8px}
-.kpi .label::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
-.kpi .value{font-family:var(--f-display);font-size:clamp(28px,4vw,36px);font-weight:800;margin-top:12px;
-  background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  text-shadow:none;filter:drop-shadow(0 0 20px color-mix(in srgb,var(--accent) 50%,transparent))}
-.kpi .meta{font-size:11px;color:var(--faint);margin-top:6px;font-weight:500}
-.kpi .trend{position:absolute;top:20px;right:20px;font-size:11px;font-weight:700;
-  display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:8px}
-.kpi .trend.up{color:var(--win);background:color-mix(in srgb,var(--win) 12%,transparent)}
-.kpi .trend.down{color:var(--lose);background:color-mix(in srgb,var(--lose) 12%,transparent)}
-
-/* === CHART === */
-.chart-wrap{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}
-.bars{display:flex;align-items:flex-end;gap:10px;height:180px;padding-top:20px}
-.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%}
-.bar-col .bar-track{flex:1;width:100%;display:flex;align-items:flex-end;position:relative}
-.bar-col .bar-track::before{content:"";position:absolute;inset:0;border-radius:8px;
-  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04)}
-.bar-col .bar{width:100%;border-radius:8px;position:relative;overflow:hidden;
-  background:linear-gradient(180deg,var(--accent),var(--accent2));
-  box-shadow:0 0 20px color-mix(in srgb,var(--accent) 40%,transparent);
-  transition:height .8s cubic-bezier(.2,.8,.2,1)}
-.bar-col .bar::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.3),transparent 60%)}
-.bar-col .day{font-size:10px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;font-weight:600}
-.bar-col .count{font-size:12px;font-weight:700;color:var(--accent);font-family:var(--f-mono)}
-
-/* === TABLE === */
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse}
-th{text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint);font-weight:600;padding:0 16px 14px}
-td{padding:16px;border-top:1px solid rgba(255,255,255,.05);font-size:13.5px;vertical-align:middle}
-tr{transition:background .2s}
-tr:hover td{background:rgba(0,240,255,.03)}
-.lead-name{font-weight:600;font-size:14px}
-.lead-contact{font-size:12px;color:var(--faint);margin-top:2px;font-family:var(--f-mono);font-size:11px}
-.source-tag{font-size:10px;color:var(--dim);background:rgba(255,255,255,.05);padding:4px 10px;border-radius:20px;
-  border:1px solid rgba(255,255,255,.08);font-weight:600;letter-spacing:.5px}
-.chip{font-size:10px;font-weight:700;padding:5px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;letter-spacing:.5px;text-transform:uppercase}
-.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
-.chip-new{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
-.chip-contacted{color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent);border:1px solid color-mix(in srgb,var(--warn) 25%,transparent)}
-.chip-won{color:var(--win);background:color-mix(in srgb,var(--win) 10%,transparent);border:1px solid color-mix(in srgb,var(--win) 25%,transparent)}
-.value-col{font-family:var(--f-mono);font-weight:600;font-size:14px;color:var(--text)}
-
-/* === APPOINTMENTS === */
-.appt-list{display:flex;flex-direction:column;gap:12px}
-.appt{display:flex;align-items:center;gap:16px;padding:16px;border-radius:14px;
-  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);transition:all .2s}
-.appt:hover{background:rgba(0,240,255,.03);border-color:rgba(0,240,255,.15)}
-.appt .date-block{text-align:center;width:56px;flex:none;padding:8px;border-radius:12px;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 15%,transparent),color-mix(in srgb,var(--accent2) 10%,transparent));
-  border:1px solid rgba(0,240,255,.2)}
-.appt .date-block .dd{font-family:var(--f-display);font-size:22px;font-weight:800;color:#fff}
-.appt .date-block .mm{font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;font-weight:700}
-.appt .date-block .tt{font-size:10px;color:var(--dim);margin-top:2px;font-family:var(--f-mono)}
-.appt .info{flex:1}.appt .info .nm{font-weight:600;font-size:14px}.appt .info .ty{font-size:12px;color:var(--faint)}
-
-/* === VOICE AGENT === */
-.agent-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
-.task-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;
-  border-bottom:1px solid rgba(255,255,255,.05)}
-.task-row:last-child{border:none}
-.task-row .task-info .t{font-size:13px;font-weight:600}
-.task-row .task-info .d{font-size:11px;color:var(--faint);margin-top:2px}
-.toggle{width:44px;height:24px;border-radius:14px;position:relative;flex:none;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,transparent),color-mix(in srgb,var(--accent2) 15%,transparent));
-  border:1px solid rgba(0,240,255,.3);box-shadow:inset 0 0 10px rgba(0,240,255,.1)}
-.toggle::after{content:"";position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;
-  background:var(--accent);box-shadow:0 0 8px var(--accent),0 0 20px color-mix(in srgb,var(--accent) 40%,transparent)}
-
-.feed-item{display:flex;align-items:center;gap:14px;padding:14px;border-radius:14px;margin-bottom:10px;
-  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);transition:all .2s}
-.feed-item:hover{border-color:rgba(0,240,255,.2);background:rgba(0,240,255,.03)}
-.feed-icon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:none;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 15%,transparent),color-mix(in srgb,var(--accent2) 10%,transparent));
-  border:1px solid rgba(0,240,255,.2)}
-.feed-icon svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2}
-.feed-body{flex:1}.feed-body .nm{font-weight:600;font-size:13px}.feed-body .mt{font-size:11px;color:var(--faint)}
-.badge{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:6px;
-  background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
-
-/* === CONTENT POSTS === */
-.posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.post-card{padding:20px}
-.post-card .platform{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  background:linear-gradient(90deg,var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.post-card .hook{font-weight:700;font-size:15px;line-height:1.35;margin-top:8px}
-.post-card .caption{font-size:12.5px;color:var(--dim);line-height:1.6;margin-top:8px}
-.post-card .hashtags{font-size:11px;color:var(--accent);margin-top:10px;font-weight:500}
-
-/* === SPARK LINE === */
-.spark-chart{width:100%;height:80px}
-.spark-chart path.fill{fill:url(#sparkGrad);stroke:none}
-.spark-chart path.line{fill:none;stroke:var(--accent);stroke-width:2;
-  filter:drop-shadow(0 0 6px var(--accent));stroke-linecap:round}
-.metric-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
-.metric .mlabel{font-size:10px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;font-weight:600}
-.metric .mval{font-family:var(--f-display);font-size:26px;font-weight:800;margin-top:6px;
-  background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-
-/* === FOOTER === */
-.footer{position:relative;z-index:2;text-align:center;padding:60px 20px 40px;
-  border-top:1px solid rgba(255,255,255,.05);margin-top:60px}
-.footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:200px;height:1px;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent)}
-.footer p{font-size:11px;color:var(--faint);letter-spacing:1px}
-.footer .f-logo{font-family:var(--f-display);font-size:12px;color:var(--dim);letter-spacing:3px;margin-bottom:8px}
-
-/* === RESPONSIVE === */
-@media(max-width:900px){
-  .kpis{grid-template-columns:1fr 1fr}
-  .chart-wrap,.agent-grid{grid-template-columns:1fr}
-  .posts-grid{grid-template-columns:1fr}
+::-webkit-scrollbar-thumb{background:rgba(var(--accent-rgb),0.3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(var(--accent-rgb),0.5)}
+/* Background Aurora */
+.aurora-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.aurora-bg::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 50%,rgba(var(--accent-rgb),0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(var(--secondary-rgb),0.08) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(var(--purple-rgb),0.06) 0%,transparent 50%)}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:drift 20s ease-in-out infinite}
+.orb-1{width:400px;height:400px;background:rgba(var(--accent-rgb),0.15);top:10%;left:10%;animation-delay:0s}
+.orb-2{width:350px;height:350px;background:rgba(var(--secondary-rgb),0.12);top:60%;right:10%;animation-delay:-7s}
+.orb-3{width:300px;height:300px;background:rgba(var(--purple-rgb),0.1);bottom:10%;left:40%;animation-delay:-14s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(30px,-20px) scale(1.05)}50%{transform:translate(-20px,30px) scale(0.95)}75%{transform:translate(20px,20px) scale(1.02)}}
+.grid-overlay{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(var(--accent-rgb),0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--accent-rgb),0.02) 1px,transparent 1px);background-size:50px 50px}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:0.3;animation:twinkle 3s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:0.2}50%{opacity:0.6}}
+/* HUD Bar */
+.hud-bar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(10,10,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
+.hud-left{display:flex;align-items:center;gap:12px}
+.logo-mark{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--secondary),var(--purple));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:18px;color:#fff}
+.brand-info h1{font-family:var(--font-display);font-size:14px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand-info p{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px}
+.hud-right{display:flex;align-items:center;gap:16px}
+.status-pill{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;background:rgba(var(--accent-rgb),0.1);border:1px solid rgba(var(--accent-rgb),0.3);font-size:10px;font-family:var(--font-mono);color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.clock{font-family:var(--font-mono);font-size:13px;color:var(--text-dim)}
+/* Main Content */
+.main-content{position:relative;z-index:1;padding:24px;padding-bottom:100px;max-width:1400px;margin:0 auto}
+.view{display:none;animation:fadeIn 0.3s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* Bottom Nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:12px 16px;background:rgba(10,10,15,0.9);backdrop-filter:blur(20px);border-top:1px solid var(--glass-border);display:flex;justify-content:center;gap:4px}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 12px;border-radius:12px;background:var(--glass);border:1px solid transparent;cursor:pointer;transition:all 0.3s;color:var(--text-dim);font-size:9px;font-family:var(--font-body);text-transform:uppercase;letter-spacing:0.5px;min-width:60px}
+.nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
+.nav-btn:hover{background:rgba(var(--accent-rgb),0.1);color:var(--text);border-color:rgba(var(--accent-rgb),0.2)}
+.nav-btn.active{background:rgba(var(--accent-rgb),0.15);color:var(--accent);border-color:rgba(var(--accent-rgb),0.4);box-shadow:0 0 20px rgba(var(--accent-rgb),0.2)}
+/* Glass Card */
+.glass-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:20px;position:relative;overflow:hidden}
+.glass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
+/* KPI Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.kpi-card{padding:20px;animation:breathe 4s ease-in-out infinite}
+.kpi-card:nth-child(2){animation-delay:-1s}
+.kpi-card:nth-child(3){animation-delay:-2s}
+.kpi-card:nth-child(4){animation-delay:-3s}
+@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px}
+.kpi-value{font-family:var(--font-mono);font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.kpi-sub{font-size:11px;color:var(--text-muted);margin-top:4px}
+/* Section headers */
+.section-title{font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:16px;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:1px solid var(--glass-border);background:var(--glass);color:var(--text);font-size:13px;cursor:pointer;transition:all 0.2s;font-family:var(--font-body)}
+.btn:hover{background:rgba(var(--accent-rgb),0.1);border-color:rgba(var(--accent-rgb),0.3)}
+.btn-primary{background:rgba(var(--accent-rgb),0.15);border-color:rgba(var(--accent-rgb),0.4);color:var(--accent)}
+.btn-primary:hover{background:rgba(var(--accent-rgb),0.25);box-shadow:0 0 15px rgba(var(--accent-rgb),0.2)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-danger{border-color:rgba(239,68,68,0.4);color:var(--danger)}
+.btn-danger:hover{background:rgba(239,68,68,0.15)}
+/* Status Chips */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.chip-new{background:rgba(var(--accent-rgb),0.15);color:var(--accent);border:1px solid rgba(var(--accent-rgb),0.3)}
+.chip-contacted{background:rgba(245,158,11,0.15);color:var(--warning);border:1px solid rgba(245,158,11,0.3)}
+.chip-won{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
+.chip-lost{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
+.chip-scheduled{background:rgba(var(--secondary-rgb),0.15);color:var(--secondary);border:1px solid rgba(var(--secondary-rgb),0.3)}
+.chip-confirmed{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
+.chip-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+/* Inputs */
+input,select,textarea{background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;font-family:var(--font-body);width:100%;transition:border-color 0.2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(var(--accent-rgb),0.5);box-shadow:0 0 10px rgba(var(--accent-rgb),0.1)}
+textarea{resize:vertical;min-height:80px}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);margin-bottom:6px}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:rgba(15,15,25,0.95);backdrop-filter:blur(30px);border:1px solid var(--glass-border);border-radius:var(--radius-xl);padding:28px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;animation:modalIn 0.3s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-header h2{font-family:var(--font-display);font-size:16px;color:var(--accent)}
+.modal-close{width:28px;height:28px;border-radius:6px;background:var(--glass);border:1px solid var(--glass-border);color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.modal-close:hover{background:rgba(239,68,68,0.2);color:var(--danger)}
+.form-row{margin-bottom:14px}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--glass-border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:12px 14px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);background:rgba(255,255,255,0.02);border-bottom:1px solid var(--glass-border)}
+td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.03)}
+tr:hover td{background:rgba(var(--accent-rgb),0.02)}
+/* Toast */
+.toast-container{position:fixed;top:80px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 20px;border-radius:10px;background:rgba(15,15,25,0.95);backdrop-filter:blur(20px);border:1px solid rgba(var(--accent-rgb),0.3);color:var(--text);font-size:13px;animation:slideIn 0.3s ease;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+/* Chart */
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:120px;padding:10px 0}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--accent),var(--secondary));min-height:4px;transition:height 0.5s ease}
+.bar-label{font-size:9px;color:var(--text-muted);font-family:var(--font-mono)}
+/* Avatar */
+.avatar{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--secondary),var(--purple));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+/* Toggle Switch */
+.toggle{position:relative;width:40px;height:22px;border-radius:11px;background:rgba(255,255,255,0.1);border:1px solid var(--glass-border);cursor:pointer;transition:all 0.3s}
+.toggle.active{background:rgba(var(--accent-rgb),0.3);border-color:rgba(var(--accent-rgb),0.5)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--text-dim);transition:all 0.3s}
+.toggle.active::after{left:20px;background:var(--accent)}
+/* Chat */
+.chat-container{display:flex;flex-direction:column;height:500px}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.chat-bubble{max-width:80%;padding:12px 16px;border-radius:16px;font-size:13px;line-height:1.5}
+.chat-bubble.ai{align-self:flex-start;background:var(--glass);border:1px solid var(--glass-border);border-bottom-left-radius:4px}
+.chat-bubble.user{align-self:flex-end;background:linear-gradient(135deg,rgba(var(--accent-rgb),0.2),rgba(var(--secondary-rgb),0.2));border:1px solid rgba(var(--accent-rgb),0.3);border-bottom-right-radius:4px}
+.chat-input-area{display:flex;gap:8px;padding:12px;border-top:1px solid var(--glass-border)}
+.chat-input-area textarea{min-height:40px;max-height:100px;resize:none}
+/* Responsive */
+@media(max-width:768px){
+.hud-bar{padding:10px 16px}
+.brand-info p{display:none}
+.bottom-nav{gap:2px;padding:8px}
+.nav-btn{min-width:44px;padding:6px 8px;font-size:0}
+.nav-btn svg{width:20px;height:20px}
+.main-content{padding:16px;padding-bottom:80px}
+.kpi-grid{grid-template-columns:repeat(2,1fr)}
+.form-row-2{grid-template-columns:1fr}
 }
-@media(max-width:560px){
-  .kpis{grid-template-columns:1fr}
-  .hud{flex-direction:column;align-items:flex-start;gap:12px}
+@media(prefers-reduced-motion:reduce){
+.orb,.kpi-card,.star{animation:none!important}
+.view{animation:none!important}
 }
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<!-- Background -->
+<div class="aurora-bg">
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+</div>
+<div class="grid-overlay"></div>
+<div class="stars" id="stars"></div>
 
-<!-- BACKGROUND UNIVERSE -->
-<div class="universe">
-  <div class="stars"></div>
-  <div class="orb"></div><div class="orb"></div><div class="orb"></div>
-  <div class="grid-overlay"></div>
-  <div class="scanline"></div>
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- HUD Bar -->
+<header class="hud-bar">
+<div class="hud-left">
+<div class="logo-mark">A</div>
+<div class="brand-info">
+<h1>Astylez Auto</h1>
+<p>Command Center</p>
+</div>
+</div>
+<div class="hud-right">
+<div class="status-pill"><span class="pulse-dot"></span>SYSTEM ONLINE</div>
+<div class="clock" id="clock">00:00:00</div>
+</div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+<!-- DASHBOARD VIEW -->
+<div class="view active" id="view-home"></div>
+<!-- LEADS VIEW -->
+<div class="view" id="view-leads"></div>
+<!-- SCHEDULE VIEW -->
+<div class="view" id="view-schedule"></div>
+<!-- VOICE VIEW -->
+<div class="view" id="view-voice"></div>
+<!-- MESSAGES VIEW -->
+<div class="view" id="view-messages"></div>
+<!-- CONTENT VIEW -->
+<div class="view" id="view-content"></div>
+<!-- AI VIEW -->
+<div class="view" id="view-ai"></div>
+<!-- SETTINGS VIEW -->
+<div class="view" id="view-setup"></div>
+</main>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+<button class="nav-btn active" data-view="home"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+<button class="nav-btn" data-view="leads"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Leads</span></button>
+<button class="nav-btn" data-view="schedule"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Schedule</span></button>
+<button class="nav-btn" data-view="voice"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>Voice</span></button>
+<button class="nav-btn" data-view="messages"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Messages</span></button>
+<button class="nav-btn" data-view="content"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Content</span></button>
+<button class="nav-btn" data-view="ai"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.27A7 7 0 0 1 14 23h-4a7 7 0 0 1-6.73-5H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="9" cy="15" r="1"/><circle cx="15" cy="15" r="1"/></svg><span>AI</span></button>
+<button class="nav-btn" data-view="setup"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68 1.65 1.65 0 0 0 9 3.17V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Setup</span></button>
+</nav>
+
+<!-- Lead Modal -->
+<div class="modal-overlay" id="leadModal">
+<div class="modal">
+<div class="modal-header"><h2>Lead Details</h2><button class="modal-close" onclick="closeModal('leadModal')">&times;</button></div>
+<div class="form-row"><label>Full Name</label><input id="leadName" placeholder="Enter name"></div>
+<div class="form-row"><label>Phone / Email</label><input id="leadContact" placeholder="Phone or email"></div>
+<div class="form-row-2">
+<div class="form-row"><label>Service</label><select id="leadService"><option>Window Tint</option><option>PPF</option><option>Vinyl Wrap</option><option>Paint Correction</option><option>Rim & Tire</option><option>Full Detail</option><option>Ceramic Tint</option><option>Full PPF + Tint</option><option>Color Change Wrap</option><option>Other</option></select></div>
+<div class="form-row"><label>Value ($)</label><input id="leadValue" type="number" placeholder="0"></div>
+</div>
+<div class="form-row-2">
+<div class="form-row"><label>Status</label><select id="leadStatus"><option>New</option><option>Contacted</option><option>Won</option><option>Lost</option></select></div>
+<div class="form-row"><label>Source</label><select id="leadSource"><option>Walk-in</option><option>Instagram</option><option>Referral</option><option>Google</option><option>Facebook</option><option>Website</option><option>Phone</option></select></div>
+</div>
+<div class="form-row-2">
+<div class="form-row"><label>Year</label><input id="leadYear" placeholder="2024"></div>
+<div class="form-row"><label>Make</label><input id="leadMake" placeholder="Tesla"></div>
+</div>
+<div class="form-row"><label>Model</label><input id="leadModel" placeholder="Model 3"></div>
+<div class="form-row"><label>Notes</label><textarea id="leadNotes" placeholder="Additional notes..."></textarea></div>
+<input type="hidden" id="leadId">
+<div style="display:flex;gap:8px;margin-top:16px">
+<button class="btn btn-primary" onclick="saveLead()">Save Lead</button>
+<button class="btn" onclick="closeModal('leadModal')">Cancel</button>
+</div>
+</div>
 </div>
 
-<!-- PAGE -->
-<div class="page">
-
-  <!-- HUD -->
-  <header class="hud">
-    <div class="brand">
-      <div class="logo"><span>N</span></div>
-      <div class="ident"><b>Northstar Co.</b><small>Command Center</small></div>
-    </div>
-    <div class="hud-right">
-      <div class="status"><span class="pulse"></span>SYSTEM ONLINE</div>
-      <div class="clock">14:32:07</div>
-    </div>
-  </header>
-
-  <!-- KPIs -->
-  <section class="section">
-    <div class="section-header">
-      <div class="section-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></div>
-      <div class="section-title">Overview</div>
-      <div class="section-sub">Real-time metrics</div>
-    </div>
-    <div class="kpis">
-      <div class="glass pad kpi"><div class="glow-bar"></div><div class="label">Total Leads</div><div class="value">847</div><div class="meta">all time</div><div class="trend up">+12%</div></div>
-      <div class="glass pad kpi"><div class="glow-bar"></div><div class="label">New This Week</div><div class="value">34</div><div class="meta">7-day window</div><div class="trend up">+8%</div></div>
-      <div class="glass pad kpi"><div class="glow-bar"></div><div class="label">Appointments</div><div class="value">12</div><div class="meta">upcoming</div><div class="trend up">+3</div></div>
-      <div class="glass pad kpi"><div class="glow-bar"></div><div class="label">Pipeline</div><div class="value">$284K</div><div class="meta">open + won</div><div class="trend up">+18%</div></div>
-    </div>
-  </section>
-
-  <!-- CHART + UPCOMING -->
-  <section class="section">
-    <div class="section-header">
-      <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></svg></div>
-      <div class="section-title">Analytics</div>
-      <div class="section-sub">Last 7 days</div>
-    </div>
-    <div class="chart-wrap">
-      <div class="glass pad">
-        <div class="bars">
-          <div class="bar-col"><div class="count">3</div><div class="bar-track"><div class="bar" style="height:30%"></div></div><div class="day">Mon</div></div>
-          <div class="bar-col"><div class="count">7</div><div class="bar-track"><div class="bar" style="height:70%"></div></div><div class="day">Tue</div></div>
-          <div class="bar-col"><div class="count">5</div><div class="bar-track"><div class="bar" style="height:50%"></div></div><div class="day">Wed</div></div>
-          <div class="bar-col"><div class="count">10</div><div class="bar-track"><div class="bar" style="height:100%"></div></div><div class="day">Thu</div></div>
-          <div class="bar-col"><div class="count">4</div><div class="bar-track"><div class="bar" style="height:40%"></div></div><div class="day">Fri</div></div>
-          <div class="bar-col"><div class="count">2</div><div class="bar-track"><div class="bar" style="height:20%"></div></div><div class="day">Sat</div></div>
-          <div class="bar-col"><div class="count">3</div><div class="bar-track"><div class="bar" style="height:30%"></div></div><div class="day">Sun</div></div>
-        </div>
-      </div>
-      <div class="glass pad">
-        <div style="font-family:var(--f-display);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-weight:700">Upcoming</div>
-        <div class="appt-list">
-          <div class="appt"><div class="date-block"><div class="dd">26</div><div class="mm">Jun</div><div class="tt">10:00</div></div><div class="info"><div class="nm">Marcus Bell</div><div class="ty">On-site estimate</div></div><span class="chip chip-new">Scheduled</span></div>
-          <div class="appt"><div class="date-block"><div class="dd">27</div><div class="mm">Jun</div><div class="tt">14:30</div></div><div class="info"><div class="nm">Theo Nguyen</div><div class="ty">Consultation</div></div><span class="chip chip-won">Confirmed</span></div>
-          <div class="appt"><div class="date-block"><div class="dd">29</div><div class="mm">Jun</div><div class="tt">09:00</div></div><div class="info"><div class="nm">Carlos Reyes</div><div class="ty">Service call</div></div><span class="chip chip-new">Scheduled</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- LEADS TABLE -->
-  <section class="section">
-    <div class="section-header">
-      <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-      <div class="section-title">Leads</div>
-      <div class="section-sub">8 active</div>
-    </div>
-    <div class="glass pad">
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Lead</th><th>Source</th><th>Value</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td><div class="lead-name">Marcus Bell</div><div class="lead-contact">(720) 555-0182</div></td><td><span class="source-tag">Referral</span></td><td class="value-col">$4,800</td><td><span class="chip chip-new">New</span></td></tr>
-            <tr><td><div class="lead-name">Dana Whitfield</div><div class="lead-contact">dana.w@email.com</div></td><td><span class="source-tag">Website</span></td><td class="value-col">$2,200</td><td><span class="chip chip-contacted">Contacted</span></td></tr>
-            <tr><td><div class="lead-name">Theo Nguyen</div><div class="lead-contact">(303) 555-0119</div></td><td><span class="source-tag">Google</span></td><td class="value-col">$6,400</td><td><span class="chip chip-new">New</span></td></tr>
-            <tr><td><div class="lead-name">Priya Anand</div><div class="lead-contact">priya@email.com</div></td><td><span class="source-tag">Meta Ads</span></td><td class="value-col">$1,500</td><td><span class="chip chip-won">Won</span></td></tr>
-            <tr><td><div class="lead-name">Carlos Reyes</div><div class="lead-contact">(720) 555-0143</div></td><td><span class="source-tag">Walk-in</span></td><td class="value-col">$980</td><td><span class="chip chip-contacted">Contacted</span></td></tr>
-            <tr><td><div class="lead-name">Hannah Cole</div><div class="lead-contact">hannah.c@email.com</div></td><td><span class="source-tag">Website</span></td><td class="value-col">$3,300</td><td><span class="chip chip-new">New</span></td></tr>
-            <tr><td><div class="lead-name">Devon Park</div><div class="lead-contact">(303) 555-0167</div></td><td><span class="source-tag">Referral</span></td><td class="value-col">$5,200</td><td><span class="chip chip-won">Won</span></td></tr>
-            <tr><td><div class="lead-name">Aisha Karim</div><div class="lead-contact">aisha@email.com</div></td><td><span class="source-tag">Google</span></td><td class="value-col">$2,750</td><td><span class="chip chip-new">New</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- VOICE AGENT -->
-  <section class="section">
-    <div class="section-header">
-      <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10a7 7 0 0 1-14 0"/><path d="M12 17v4"/></svg></div>
-      <div class="section-title">Voice Agent</div>
-      <div class="section-sub">AI Receptionist</div>
-    </div>
-    <div class="agent-grid">
-      <div class="glass pad">
-        <div style="font-family:var(--f-display);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-weight:700">Agent Tasks</div>
-        <div class="task-row"><div class="task-info"><div class="t">Answer inbound calls</div><div class="d">Greets callers, answers questions, takes messages</div></div><div class="toggle"></div></div>
-        <div class="task-row"><div class="task-info"><div class="t">Book appointments</div><div class="d">Checks availability and schedules on the call</div></div><div class="toggle"></div></div>
-        <div class="task-row"><div class="task-info"><div class="t">Confirmation calls &amp; texts</div><div class="d">Reminds and confirms upcoming appointments</div></div><div class="toggle"></div></div>
-        <div class="task-row"><div class="task-info"><div class="t">Missed-call follow-up</div><div class="d">Texts back any missed call within seconds</div></div><div class="toggle"></div></div>
-        <div class="task-row"><div class="task-info"><div class="t">Orphan-lead follow-up</div><div class="d">Chases leads that never got contacted</div></div><div class="toggle"></div></div>
-      </div>
-      <div class="glass pad">
-        <div style="font-family:var(--f-display);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-weight:700">Call Volume</div>
-        <svg class="spark-chart" viewBox="0 0 200 80" preserveAspectRatio="none">
-          <defs><linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(0,240,255,.3)"/><stop offset="100%" stop-color="rgba(0,240,255,0)"/></linearGradient></defs>
-          <path class="fill" d="M0,80 L0,50 L28,36 L57,42 L85,22 L114,30 L142,14 L171,20 L200,26 L200,80 Z"/>
-          <path class="line" d="M0,50 L28,36 L57,42 L85,22 L114,30 L142,14 L171,20 L200,26"/>
-        </svg>
-        <div class="metric-row">
-          <div class="metric"><div class="mlabel">Answered</div><div class="mval">69</div></div>
-          <div class="metric"><div class="mlabel">Booked</div><div class="mval">28</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="glass pad" style="margin-top:16px">
-      <div style="font-family:var(--f-display);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-weight:700">Needs a Call Now</div>
-      <div class="feed-item"><div class="feed-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.1 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2z"/></svg></div><div class="feed-body"><div class="nm">Marcus Bell <span class="badge">Confirm</span></div><div class="mt">On-site estimate &middot; Jun 26</div></div></div>
-      <div class="feed-item"><div class="feed-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.1 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2z"/></svg></div><div class="feed-body"><div class="nm">Hannah Cole <span class="badge">Orphan</span></div><div class="mt">No contact &middot; added 4d ago</div></div></div>
-      <div class="feed-item"><div class="feed-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.1 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2z"/></svg></div><div class="feed-body"><div class="nm">Aisha Karim <span class="badge">Orphan</span></div><div class="mt">No contact &middot; added 6d ago</div></div></div>
-    </div>
-  </section>
-
-  <!-- CONTENT STUDIO -->
-  <section class="section">
-    <div class="section-header">
-      <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg></div>
-      <div class="section-title">Content Studio</div>
-      <div class="section-sub">AI-generated posts</div>
-    </div>
-    <div class="posts-grid">
-      <div class="glass post-card"><div class="platform">Instagram</div><div class="hook">Your roof tells your story</div><div class="caption">Every shingle we lay is a promise kept. 15 years protecting Denver homes from whatever the sky throws.</div><div class="hashtags">#DenverRoofing #StormReady #NorthstarCo</div></div>
-      <div class="glass post-card"><div class="platform">Facebook</div><div class="hook">Storm season is here early</div><div class="caption">Hail doesn't wait and neither do we. Free inspections this week for any homeowner in the metro area.</div><div class="hashtags">#HailDamage #FreeInspection #Colorado</div></div>
-      <div class="glass post-card"><div class="platform">LinkedIn</div><div class="hook">Built different, literally</div><div class="caption">We just hit 400 roofs completed with zero unresolved claims. Here's how we got our process tight.</div><div class="hashtags">#Roofing #SmallBusiness #QualityFirst</div></div>
-      <div class="glass post-card"><div class="platform">X (Twitter)</div><div class="hook">That after-storm silence?</div><div class="caption">That's us already on your block checking damage. Denver homeowners, we've got you.</div><div class="hashtags">#DenverStrong #RoofRepair #Northstar</div></div>
-      <div class="glass post-card"><div class="platform">Instagram</div><div class="hook">Before vs. after never gets old</div><div class="caption">Swipe to see this Lakewood home go from storm-wrecked to showroom. 3 days start to finish.</div><div class="hashtags">#Transformation #RoofLife #BeforeAfter</div></div>
-      <div class="glass post-card"><div class="platform">Facebook</div><div class="hook">Your neighbors trust us</div><div class="caption">4.9 stars and 200+ reviews later, we're still showing up like it's day one.</div><div class="hashtags">#CustomerLove #TopRated #Denver</div></div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="f-logo">NORTHSTAR CO.</div>
-    <p>Command Center v2.0 &middot; All systems operational &middot; Encrypted &amp; secure</p>
-  </footer>
-
+<!-- Appointment Modal -->
+<div class="modal-overlay" id="apptModal">
+<div class="modal">
+<div class="modal-header"><h2>Appointment</h2><button class="modal-close" onclick="closeModal('apptModal')">&times;</button></div>
+<div class="form-row"><label>Lead</label><select id="apptLead"></select></div>
+<div class="form-row-2">
+<div class="form-row"><label>Date</label><input id="apptDate" type="date"></div>
+<div class="form-row"><label>Time</label><input id="apptTime" type="time"></div>
 </div>
+<div class="form-row"><label>Service</label><select id="apptService"><option>Window Tint</option><option>PPF Install</option><option>Vinyl Wrap</option><option>Paint Correction</option><option>Rim Fitting</option><option>Full Detail</option><option>Wrap Consultation</option><option>Estimate</option></select></div>
+<div class="form-row"><label>Confirm Via</label><select id="apptConfirm"><option>Text</option><option>Call</option><option>Both</option></select></div>
+<input type="hidden" id="apptId">
+<div style="display:flex;gap:8px;margin-top:16px">
+<button class="btn btn-primary" onclick="saveAppt()">Save Appointment</button>
+<button class="btn" onclick="closeModal('apptModal')">Cancel</button>
+</div>
+</div>
+</div>
+
+<script>
+// ========== DATA LAYER ==========
+const STORAGE_KEY = 'astylez_data';
+const DEFAULT_LEADS = [
+{id:'l1',name:'Marcus Rodriguez',contact:'(720) 555-0182',service:'Full PPF',value:4800,status:'New',source:'Instagram',year:'2024',make:'Tesla',model:'Model 3',notes:'Interested in full front coverage',created:Date.now()-86400000*1},
+{id:'l2',name:'Dana Chen',contact:'dana.c@email.com',service:'Window Tint',value:450,status:'Contacted',source:'Google',year:'2023',make:'BMW',model:'X5',notes:'Wants ceramic tint all around',created:Date.now()-86400000*2},
+{id:'l3',name:'Theo Washington',contact:'(303) 555-0119',service:'Vinyl Wrap',value:3200,status:'New',source:'Referral',year:'2024',make:'Dodge',model:'Charger',notes:'Satin black full wrap',created:Date.now()-86400000*0},
+{id:'l4',name:'Priya Patel',contact:'priya@email.com',service:'Paint Correction',value:800,status:'Won',source:'Website',year:'2022',make:'Mercedes',model:'C300',notes:'Stage 2 correction + ceramic coat',created:Date.now()-86400000*3},
+{id:'l5',name:'Carlos Mendez',contact:'(720) 555-0143',service:'Rim & Tire',value:2400,status:'Contacted',source:'Facebook',year:'2023',make:'Chevy',model:'Silverado',notes:'22" black wheels + tires',created:Date.now()-86400000*1},
+{id:'l6',name:'Hannah Brooks',contact:'hannah.b@email.com',service:'Ceramic Tint',value:650,status:'New',source:'Instagram',year:'2024',make:'Audi',model:'Q5',notes:'Full car ceramic tint',created:Date.now()-86400000*0},
+{id:'l7',name:'Devon Marshall',contact:'(303) 555-0167',service:'Full PPF + Tint',value:5800,status:'Won',source:'Referral',year:'2024',make:'Porsche',model:'911',notes:'Full body PPF + ceramic tint',created:Date.now()-86400000*5},
+{id:'l8',name:'Aisha Johnson',contact:'aisha@email.com',service:'Color Change Wrap',value:4200,status:'New',source:'Phone',year:'2023',make:'Ford',model:'Mustang',notes:'Midnight purple color change',created:Date.now()-86400000*2}
+];
+
+function getToday(){return new Date().toISOString().split('T')[0]}
+function getTomorrow(){const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().split('T')[0]}
+function getDayAfter(){const d=new Date();d.setDate(d.getDate()+2);return d.toISOString().split('T')[0]}
+function getFourDays(){const d=new Date();d.setDate(d.getDate()+4);return d.toISOString().split('T')[0]}
+
+const DEFAULT_APPTS = [
+{id:'a1',leadId:'l1',leadName:'Marcus Rodriguez',date:getTomorrow(),time:'09:00',service:'Full PPF Install',confirmVia:'Text',status:'Scheduled'},
+{id:'a2',leadId:'l3',leadName:'Theo Washington',date:getDayAfter(),time:'14:30',service:'Wrap Consultation',confirmVia:'Call',status:'Confirmed'},
+{id:'a3',leadId:'l5',leadName:'Carlos Mendez',date:getFourDays(),time:'10:00',service:'Rim Fitting',confirmVia:'Both',status:'Scheduled'}
+];
+
+const DEFAULT_SETTINGS = {name:'Astylez Auto',tagline:'Command Center',phone:'(720) 555-AUTO',website:'www.astylezauto.com',about:'Premium automotive styling: window tint, PPF, vinyl wraps, paint correction, and rim & tire packages.',accent:'#00f0ff'};
+
+let state = loadData();
+function loadData(){
+const saved = localStorage.getItem(STORAGE_KEY);
+if(saved){try{return JSON.parse(saved)}catch(e){}}
+return {leads:[...DEFAULT_LEADS],appointments:[...DEFAULT_APPTS],settings:{...DEFAULT_SETTINGS},chatHistory:[]};
+}
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function genId(){return 'id_'+Date.now()+'_'+Math.random().toString(36).substr(2,5)}
+
+// ========== UTILITY ==========
+function toast(msg){
+const c=document.getElementById('toastContainer');
+const t=document.createElement('div');t.className='toast';t.textContent=msg;
+c.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+function formatCurrency(n){return '$'+Number(n).toLocaleString()}
+function timeAgo(ts){
+const diff=Date.now()-ts;const mins=Math.floor(diff/60000);
+if(mins<60)return mins+'m ago';const hrs=Math.floor(mins/60);
+if(hrs<24)return hrs+'h ago';return Math.floor(hrs/24)+'d ago';
+}
+function formatDate(dateStr){
+const d=new Date(dateStr+'T00:00:00');
+return{day:d.getDate(),month:d.toLocaleDateString('en',{month:'short'}),weekday:d.toLocaleDateString('en',{weekday:'short'})};
+}
+function getInitials(name){return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+
+// ========== NAVIGATION ==========
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+btn.addEventListener('click',()=>{
+document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+document.getElementById('view-'+btn.dataset.view).classList.add('active');
+renderCurrentView(btn.dataset.view);
+});
+});
+function renderCurrentView(view){
+switch(view){
+case 'home':renderDashboard();break;
+case 'leads':renderLeads();break;
+case 'schedule':renderSchedule();break;
+case 'voice':renderVoice();break;
+case 'messages':renderMessages();break;
+case 'content':renderContent();break;
+case 'ai':renderAI();break;
+case 'setup':renderSetup();break;
+}
+}
+
+// ========== MODALS ==========
+function openModal(id){document.getElementById(id).classList.add('active')}
+function closeModal(id){document.getElementById(id).classList.remove('active')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'))}});
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('active')})});
+
+// ========== CLOCK ==========
+function updateClock(){
+const now=new Date();
+document.getElementById('clock').textContent=now.toLocaleTimeString('en-US',{hour12:true,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateClock,1000);updateClock();
+
+// ========== STARS ==========
+(function createStars(){
+const container=document.getElementById('stars');
+for(let i=0;i<50;i++){
+const star=document.createElement('div');star.className='star';
+star.style.left=Math.random()*100+'%';star.style.top=Math.random()*100+'%';
+star.style.animationDelay=Math.random()*3+'s';star.style.opacity=Math.random()*0.4+0.1;
+container.appendChild(star);
+}
+})();
+
+// ========== DASHBOARD ==========
+function renderDashboard(){
+const leads=state.leads;const appts=state.appointments;
+const totalLeads=leads.length;
+const weekAgo=Date.now()-7*86400000;
+const newThisWeek=leads.filter(l=>l.created>weekAgo).length;
+const upcomingAppts=appts.filter(a=>new Date(a.date+'T'+a.time)>=new Date()).length;
+const pipelineValue=leads.filter(l=>l.status!=='Lost').reduce((s,l)=>s+Number(l.value||0),0);
+
+// Bar chart data - leads per day for last 7 days
+const dayLabels=[];const dayCounts=[];
+for(let i=6;i>=0;i--){
+const d=new Date();d.setDate(d.getDate()-i);
+const ds=d.toISOString().split('T')[0];
+dayLabels.push(d.toLocaleDateString('en',{weekday:'short'}));
+dayCounts.push(leads.filter(l=>{const ld=new Date(l.created).toISOString().split('T')[0];return ld===ds}).length);
+}
+const maxCount=Math.max(...dayCounts,1);
+
+// Upcoming appointments
+const upcoming=appts.filter(a=>new Date(a.date+'T'+a.time)>=new Date()).sort((a,b)=>new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time)).slice(0,3);
+
+// Recent leads
+const recent=leads.slice().sort((a,b)=>b.created-a.created).slice(0,5);
+
+document.getElementById('view-home').innerHTML=`
+<div class="kpi-grid">
+<div class="glass-card kpi-card"><div class="kpi-label">Total Leads</div><div class="kpi-value">${totalLeads}</div><div class="kpi-sub">All time</div></div>
+<div class="glass-card kpi-card"><div class="kpi-label">New This Week</div><div class="kpi-value">${newThisWeek}</div><div class="kpi-sub">Last 7 days</div></div>
+<div class="glass-card kpi-card"><div class="kpi-label">Upcoming Appts</div><div class="kpi-value">${upcomingAppts}</div><div class="kpi-sub">Scheduled</div></div>
+<div class="glass-card kpi-card"><div class="kpi-label">Pipeline Value</div><div class="kpi-value">${formatCurrency(pipelineValue)}</div><div class="kpi-sub">Active pipeline</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+<div class="glass-card">
+<h3 class="section-title" style="font-size:14px;margin-bottom:12px">Lead Volume (7 Days)</h3>
+<div class="bar-chart">${dayCounts.map((c,i)=>`<div class="bar-col"><div class="bar" style="height:${(c/maxCount)*100}%"></div><div class="bar-label">${dayLabels[i]}</div></div>`).join('')}</div>
+</div>
+<div class="glass-card">
+<h3 class="section-title" style="font-size:14px;margin-bottom:12px">Upcoming</h3>
+${upcoming.length?upcoming.map(a=>{const fd=formatDate(a.date);return`<div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><div style="text-align:center;min-width:44px"><div style="font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--accent)">${fd.day}</div><div style="font-size:10px;color:var(--text-dim)">${fd.month}</div></div><div><div style="font-size:13px;font-weight:500">${a.leadName}</div><div style="font-size:11px;color:var(--text-dim)">${a.service} · ${a.time}</div></div></div>`}).join(''):'<p style="color:var(--text-muted);font-size:13px">No upcoming appointments</p>'}
+</div>
+</div>
+<div class="glass-card">
+<h3 class="section-title" style="font-size:14px;margin-bottom:12px">Recent Leads</h3>
+${recent.map(l=>`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><div class="avatar">${getInitials(l.name)}</div><div style="flex:1"><div style="font-size:13px;font-weight:500">${l.name}</div><div style="font-size:11px;color:var(--text-dim)">${l.source} · ${timeAgo(l.created)}</div></div><div style="text-align:right"><div style="font-family:var(--font-mono);font-size:13px;color:var(--accent)">${formatCurrency(l.value)}</div><span class="chip chip-${l.status.toLowerCase()}"><span class="chip-dot"></span>${l.status}</span></div></div>`).join('')}
+</div>`;
+}
+</script>
+
+
+
+<script>
+// ========== LEADS VIEW ==========
+function renderLeads(){
+const leads=state.leads;
+document.getElementById('view-leads').innerHTML=`
+<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap">
+<h2 class="section-title" style="margin:0">Leads CRM</h2>
+<div style="flex:1"></div>
+<input id="leadSearch" placeholder="Search leads..." style="max-width:200px" oninput="filterLeads()">
+<select id="leadFilter" style="max-width:140px" onchange="filterLeads()"><option value="">All Status</option><option>New</option><option>Contacted</option><option>Won</option><option>Lost</option></select>
+<button class="btn btn-primary" onclick="openNewLead()">+ New Lead</button>
+<button class="btn" onclick="importCSV()">CSV Import</button>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name / Contact</th><th>Service</th><th>Vehicle</th><th>Value</th><th>Status</th><th>Actions</th></tr></thead>
+<tbody id="leadsTableBody">
+${leads.map(l=>`<tr data-id="${l.id}" data-status="${l.status.toLowerCase()}" data-name="${l.name.toLowerCase()} ${l.contact.toLowerCase()}">
+<td><div style="font-weight:500">${l.name}</div><div style="font-size:11px;color:var(--text-dim)">${l.contact}</div></td>
+<td>${l.service}</td>
+<td style="font-size:12px;color:var(--text-dim)">${l.year||''} ${l.make||''} ${l.model||''}</td>
+<td style="font-family:var(--font-mono)">${formatCurrency(l.value)}</td>
+<td><span class="chip chip-${l.status.toLowerCase()}" onclick="cycleStatus('${l.id}')"><span class="chip-dot"></span>${l.status}</span></td>
+<td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="editLead('${l.id}')">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteLead('${l.id}')">Del</button></div></td>
+</tr>`).join('')}
+</tbody>
+</table>
+</div>
+<input type="file" id="csvInput" accept=".csv" style="display:none" onchange="handleCSV(event)">`;
+}
+
+function filterLeads(){
+const search=(document.getElementById('leadSearch')?.value||'').toLowerCase();
+const filter=(document.getElementById('leadFilter')?.value||'').toLowerCase();
+document.querySelectorAll('#leadsTableBody tr').forEach(row=>{
+const matchName=row.dataset.name.includes(search);
+const matchStatus=!filter||row.dataset.status===filter;
+row.style.display=(matchName&&matchStatus)?'':'none';
+});
+}
+
+function openNewLead(){
+document.getElementById('leadId').value='';
+document.getElementById('leadName').value='';
+document.getElementById('leadContact').value='';
+document.getElementById('leadService').value='Window Tint';
+document.getElementById('leadValue').value='';
+document.getElementById('leadStatus').value='New';
+document.getElementById('leadSource').value='Walk-in';
+document.getElementById('leadYear').value='';
+document.getElementById('leadMake').value='';
+document.getElementById('leadModel').value='';
+document.getElementById('leadNotes').value='';
+openModal('leadModal');
+}
+
+function editLead(id){
+const l=state.leads.find(x=>x.id===id);if(!l)return;
+document.getElementById('leadId').value=l.id;
+document.getElementById('leadName').value=l.name;
+document.getElementById('leadContact').value=l.contact;
+document.getElementById('leadService').value=l.service;
+document.getElementById('leadValue').value=l.value;
+document.getElementById('leadStatus').value=l.status;
+document.getElementById('leadSource').value=l.source||'Walk-in';
+document.getElementById('leadYear').value=l.year||'';
+document.getElementById('leadMake').value=l.make||'';
+document.getElementById('leadModel').value=l.model||'';
+document.getElementById('leadNotes').value=l.notes||'';
+openModal('leadModal');
+}
+
+function saveLead(){
+const id=document.getElementById('leadId').value;
+const data={
+name:document.getElementById('leadName').value,
+contact:document.getElementById('leadContact').value,
+service:document.getElementById('leadService').value,
+value:Number(document.getElementById('leadValue').value)||0,
+status:document.getElementById('leadStatus').value,
+source:document.getElementById('leadSource').value,
+year:document.getElementById('leadYear').value,
+make:document.getElementById('leadMake').value,
+model:document.getElementById('leadModel').value,
+notes:document.getElementById('leadNotes').value
+};
+if(!data.name){toast('Name is required');return}
+if(id){
+const idx=state.leads.findIndex(l=>l.id===id);
+if(idx>=0)state.leads[idx]={...state.leads[idx],...data};
+toast('Lead updated');
+}else{
+state.leads.push({id:genId(),created:Date.now(),...data});
+toast('Lead created');
+}
+saveData();closeModal('leadModal');renderLeads();
+}
+
+function deleteLead(id){
+if(!confirm('Delete this lead?'))return;
+state.leads=state.leads.filter(l=>l.id!==id);
+saveData();renderLeads();toast('Lead deleted');
+}
+
+function cycleStatus(id){
+const statuses=['New','Contacted','Won','Lost'];
+const l=state.leads.find(x=>x.id===id);if(!l)return;
+const idx=statuses.indexOf(l.status);
+l.status=statuses[(idx+1)%statuses.length];
+saveData();renderLeads();
+}
+
+function importCSV(){document.getElementById('csvInput').click()}
+function handleCSV(e){
+const file=e.target.files[0];if(!file)return;
+const reader=new FileReader();
+reader.onload=function(ev){
+const lines=ev.target.result.split('\n').filter(l=>l.trim());
+const headers=lines[0].split(',').map(h=>h.trim().toLowerCase());
+for(let i=1;i<lines.length;i++){
+const vals=lines[i].split(',').map(v=>v.trim());
+const row={};headers.forEach((h,j)=>row[h]=vals[j]||'');
+state.leads.push({id:genId(),name:row.name||'Unknown',contact:row.phone||row.email||'',service:row.service||'Other',value:Number(row.value)||0,status:'New',source:row.source||'CSV Import',year:row.year||'',make:row.make||'',model:row.model||'',notes:row.notes||'',created:Date.now()});
+}
+saveData();renderLeads();toast(`Imported ${lines.length-1} leads`);
+};
+reader.readAsText(file);e.target.value='';
+}
+</script>
+
+
+<script>
+// ========== SCHEDULE VIEW ==========
+function renderSchedule(){
+const appts=state.appointments.slice().sort((a,b)=>new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time));
+document.getElementById('view-schedule').innerHTML=`
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+<h2 class="section-title" style="margin:0">Schedule</h2>
+<button class="btn btn-primary" onclick="openNewAppt()">+ New Appointment</button>
+</div>
+<div class="glass-card" style="margin-bottom:16px;padding:12px 16px;border-left:3px solid var(--accent)">
+<p style="font-size:12px;color:var(--text-dim)">Confirmations are queued for the Voice Agent. Toggle auto-confirm in Voice settings.</p>
+</div>
+${appts.map(a=>{
+const fd=formatDate(a.date);
+const statusClass=a.status==='Confirmed'?'chip-confirmed':'chip-scheduled';
+return `<div class="glass-card" style="margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+<div style="text-align:center;min-width:56px;padding:8px;border-radius:8px;background:rgba(var(--accent-rgb),0.1)">
+<div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent)">${fd.day}</div>
+<div style="font-size:10px;color:var(--text-dim)">${fd.month}</div>
+<div style="font-size:10px;color:var(--text-muted)">${a.time}</div>
+</div>
+<div style="flex:1">
+<div style="font-weight:500;font-size:14px">${a.leadName}</div>
+<div style="font-size:12px;color:var(--text-dim);margin-top:2px">${a.service}</div>
+<div style="font-size:11px;color:var(--text-muted);margin-top:2px">Confirm: ${a.confirmVia}</div>
+</div>
+<span class="chip ${statusClass}"><span class="chip-dot"></span>${a.status}</span>
+<div style="display:flex;gap:4px">
+<button class="btn btn-sm" onclick="editAppt('${a.id}')">Edit</button>
+<button class="btn btn-sm btn-danger" onclick="deleteAppt('${a.id}')">Del</button>
+</div>
+</div>`;
+}).join('')}
+${appts.length===0?'<div class="glass-card"><p style="color:var(--text-muted);text-align:center">No appointments scheduled</p></div>':''}`;
+}
+
+function openNewAppt(){
+document.getElementById('apptId').value='';
+const sel=document.getElementById('apptLead');
+sel.innerHTML=state.leads.map(l=>`<option value="${l.id}">${l.name}</option>`).join('');
+document.getElementById('apptDate').value=getTomorrow();
+document.getElementById('apptTime').value='10:00';
+document.getElementById('apptService').value='Window Tint';
+document.getElementById('apptConfirm').value='Text';
+openModal('apptModal');
+}
+
+function editAppt(id){
+const a=state.appointments.find(x=>x.id===id);if(!a)return;
+document.getElementById('apptId').value=a.id;
+const sel=document.getElementById('apptLead');
+sel.innerHTML=state.leads.map(l=>`<option value="${l.id}">${l.name}</option>`).join('');
+sel.value=a.leadId;
+document.getElementById('apptDate').value=a.date;
+document.getElementById('apptTime').value=a.time;
+document.getElementById('apptService').value=a.service;
+document.getElementById('apptConfirm').value=a.confirmVia;
+openModal('apptModal');
+}
+
+function saveAppt(){
+const id=document.getElementById('apptId').value;
+const leadId=document.getElementById('apptLead').value;
+const lead=state.leads.find(l=>l.id===leadId);
+const data={
+leadId:leadId,
+leadName:lead?lead.name:'Unknown',
+date:document.getElementById('apptDate').value,
+time:document.getElementById('apptTime').value,
+service:document.getElementById('apptService').value,
+confirmVia:document.getElementById('apptConfirm').value,
+status:'Scheduled'
+};
+if(!data.date){toast('Date is required');return}
+if(id){
+const idx=state.appointments.findIndex(a=>a.id===id);
+if(idx>=0)state.appointments[idx]={...state.appointments[idx],...data};
+toast('Appointment updated');
+}else{
+state.appointments.push({id:genId(),...data});
+toast('Appointment created');
+}
+saveData();closeModal('apptModal');renderSchedule();
+}
+
+function deleteAppt(id){
+if(!confirm('Delete this appointment?'))return;
+state.appointments=state.appointments.filter(a=>a.id!==id);
+saveData();renderSchedule();toast('Appointment deleted');
+}
+</script>
+
+
+<script>
+// ========== VOICE AGENT VIEW ==========
+function renderVoice(){
+const needsCall=state.leads.filter(l=>l.status==='New'||l.status==='Contacted').slice(0,4);
+const scheduled=state.appointments.filter(a=>a.status==='Scheduled');
+const callQueue=[...needsCall.map(l=>({name:l.name,reason:l.status==='New'?'Orphan lead follow-up':'Confirmation needed',contact:l.contact})),...scheduled.map(a=>({name:a.leadName,reason:'Appointment confirmation',contact:''}))].slice(0,5);
+
+document.getElementById('view-voice').innerHTML=`
+<h2 class="section-title">Voice Agent</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+<div class="glass-card">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Agent Tasks</h3>
+<div style="display:flex;flex-direction:column;gap:12px">
+${[['Answer inbound calls',true],['Book appointments',true],['Confirmation calls & texts',true],['Missed-call follow-up',true],['Orphan-lead follow-up',false],['Estimate callbacks',false]].map(([label,on])=>`
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span style="font-size:13px">${label}</span>
+<div class="toggle ${on?'active':''}" onclick="this.classList.toggle('active')"></div>
+</div>`).join('')}
+</div>
+</div>
+<div class="glass-card">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Call Volume</h3>
+<svg viewBox="0 0 200 60" style="width:100%;height:60px;margin-bottom:12px">
+<polyline points="0,50 20,45 40,30 60,35 80,20 100,25 120,15 140,28 160,10 180,18 200,12" fill="none" stroke="url(#sparkGrad)" stroke-width="2"/>
+<defs><linearGradient id="sparkGrad"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--purple)"/></linearGradient></defs>
+</svg>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="text-align:center;padding:12px;border-radius:8px;background:rgba(var(--accent-rgb),0.05)">
+<div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent)">47</div>
+<div style="font-size:10px;color:var(--text-dim);text-transform:uppercase">Answered</div>
+</div>
+<div style="text-align:center;padding:12px;border-radius:8px;background:rgba(var(--secondary-rgb),0.05)">
+<div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--secondary)">23</div>
+<div style="font-size:10px;color:var(--text-dim);text-transform:uppercase">Booked</div>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-card" style="margin-bottom:16px">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Needs a Call Now</h3>
+${callQueue.length?callQueue.map(c=>`
+<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
+<div class="avatar" style="width:28px;height:28px;font-size:10px">${getInitials(c.name)}</div>
+<div style="flex:1"><div style="font-size:13px">${c.name}</div><div style="font-size:11px;color:var(--text-dim)">${c.reason}</div></div>
+<button class="btn btn-sm btn-primary" onclick="toast('Call queued for '+${JSON.stringify(c.name)})">Queue Call</button>
+</div>`).join(''):'<p style="color:var(--text-muted);font-size:13px">No pending calls</p>'}
+</div>
+<div class="glass-card" style="margin-bottom:16px">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Agent Config</h3>
+<div class="form-row"><label>Greeting</label><input value="Thanks for calling Astylez Auto! How can I help you today?"></div>
+<div class="form-row"><label>Business Hours</label><input value="Mon-Sat 8:00 AM - 6:00 PM"></div>
+</div>
+<div class="glass-card" style="border-left:3px solid var(--warning);padding:12px 16px">
+<p style="font-size:12px;color:var(--text-dim)">Voice is in standby. Connect Twilio ConversationRelay to go live.</p>
+</div>`;
+}
+</script>
+
+
+<script>
+// ========== MESSAGES VIEW ==========
+const MESSAGE_TEMPLATES = {
+'Follow-up': `Hi {name},\n\nThanks for reaching out to Astylez Auto! I wanted to follow up on your inquiry about {service}. We'd love to get you scheduled for a consultation.\n\nLet me know what works best for your schedule!\n\nBest,\nAstylez Auto Team`,
+'Appointment Reminder': `Hi {name},\n\nJust a friendly reminder about your upcoming appointment at Astylez Auto:\n\nService: {service}\nPlease arrive 10 minutes early.\n\nSee you soon!\n- Astylez Auto`,
+'Quote Ready': `Hi {name},\n\nGreat news! Your quote for {service} is ready.\n\nWe've put together a competitive package that includes premium materials and our satisfaction guarantee.\n\nReply to this message or call us to discuss details.\n\n- Astylez Auto`,
+'Thank You': `Hi {name},\n\nThank you for choosing Astylez Auto for your {service}! We hope you love the results.\n\nIf you have any questions about aftercare, don't hesitate to reach out.\n\nEnjoy the new look!\n- The Astylez Auto Team`,
+'Review Request': `Hi {name},\n\nWe hope you're enjoying your {service} from Astylez Auto!\n\nWould you mind leaving us a quick review? It really helps other car enthusiasts find us.\n\nGoogle: [link]\n\nThank you!\n- Astylez Auto`
+};
+
+const MOCK_MESSAGES = [
+{to:'Marcus Rodriguez',template:'Follow-up',channel:'Text',time:Date.now()-3600000},
+{to:'Dana Chen',template:'Quote Ready',channel:'Email',time:Date.now()-7200000},
+{to:'Priya Patel',template:'Thank You',channel:'Both',time:Date.now()-86400000},
+{to:'Carlos Mendez',template:'Appointment Reminder',channel:'Text',time:Date.now()-172800000}
+];
+
+function renderMessages(){
+const templates=Object.keys(MESSAGE_TEMPLATES);
+document.getElementById('view-messages').innerHTML=`
+<h2 class="section-title">Messages</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+<div class="glass-card">
+<div class="form-row"><label>Template</label>
+<select id="msgTemplate" onchange="updateMsgPreview()">
+${templates.map(t=>`<option>${t}</option>`).join('')}
+</select></div>
+<div class="form-row"><label>Send To</label>
+<select id="msgTo">${state.leads.map(l=>`<option value="${l.id}">${l.name}</option>`).join('')}</select></div>
+<div class="form-row"><label>Channel</label>
+<select id="msgChannel"><option>Text</option><option>Email</option><option>Both</option></select></div>
+<button class="btn btn-primary" onclick="sendMessage()" style="margin-top:8px">Send Message</button>
+</div>
+<div class="glass-card">
+<label style="margin-bottom:8px">Preview</label>
+<div id="msgPreview" style="font-size:12px;color:var(--text-dim);white-space:pre-wrap;line-height:1.6;max-height:200px;overflow-y:auto"></div>
+</div>
+</div>
+<div class="glass-card">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Recent Messages</h3>
+${MOCK_MESSAGES.map(m=>`
+<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
+<div class="avatar" style="width:28px;height:28px;font-size:10px">${getInitials(m.to)}</div>
+<div style="flex:1"><div style="font-size:13px">${m.to}</div><div style="font-size:11px;color:var(--text-dim)">${m.template} · ${m.channel}</div></div>
+<div style="font-size:11px;color:var(--text-muted)">${timeAgo(m.time)}</div>
+</div>`).join('')}
+</div>`;
+updateMsgPreview();
+}
+
+function updateMsgPreview(){
+const tmpl=document.getElementById('msgTemplate')?.value;
+const leadId=document.getElementById('msgTo')?.value;
+const lead=state.leads.find(l=>l.id===leadId);
+if(!tmpl||!lead)return;
+let text=MESSAGE_TEMPLATES[tmpl]||'';
+text=text.replace(/\{name\}/g,lead.name.split(' ')[0]);
+text=text.replace(/\{service\}/g,lead.service);
+const preview=document.getElementById('msgPreview');
+if(preview)preview.textContent=text;
+}
+
+function sendMessage(){
+toast('Queued - connects when Twilio/SendGrid backend is live');
+}
+</script>
+
+
+<script>
+// ========== CONTENT STUDIO VIEW ==========
+const SAMPLE_POSTS = [
+{platform:'Instagram',hook:'Transform your ride in 24 hours',caption:'Full PPF installation on this 2024 Porsche 911. Crystal clear protection that keeps your paint looking showroom fresh for years. Book your consultation today.',hashtags:'#PPF #PaintProtection #Porsche911 #AutoDetailing #DenverCars'},
+{platform:'Facebook',hook:'Why ceramic tint is worth every penny',caption:'Regular tint vs ceramic tint - the difference is night and day. Our ceramic tint blocks 99% of UV rays and keeps your interior 40% cooler. Perfect for Colorado summers.',hashtags:'#CeramicTint #WindowTint #ColoradoCars #HeatRejection #AstylesAuto'},
+{platform:'TikTok',hook:'Color change wrap reveal',caption:'From factory white to midnight purple. Watch this Ford Mustang get a complete color change wrap. The transformation is insane. What color would you choose?',hashtags:'#VinylWrap #ColorChange #CarWrap #Mustang #Transformation'},
+{platform:'Instagram',hook:'Before & after paint correction',caption:'Swirl marks and scratches GONE. Stage 2 paint correction brought this Mercedes C300 back to life. The depth and clarity in this paint is unreal.',hashtags:'#PaintCorrection #DetailingLife #Mercedes #SwurlFree #MirrorFinish'},
+{platform:'LinkedIn',hook:'Growing our team - now hiring',caption:'Astylez Auto is expanding! We are looking for experienced wrap installers and tint technicians. Competitive pay, great environment, premium clients. DM for details.',hashtags:'#Hiring #AutomotiveJobs #CareerGrowth #DenverJobs #AutoIndustry'},
+{platform:'X',hook:'New rim packages just dropped',caption:'22" matte black forged wheels + performance tires. Complete packages starting at $2,400. Financing available. Hit us up for a quote on your ride.',hashtags:'#CustomRims #Wheels #TirePackage #UpgradeYourRide #Aftermarket'}
+];
+
+function renderContent(){
+document.getElementById('view-content').innerHTML=`
+<h2 class="section-title">Content Studio</h2>
+<div class="glass-card" style="margin-bottom:20px">
+<div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+<div class="form-row" style="margin:0;flex:1;min-width:150px"><label>Tone</label>
+<select id="contentTone"><option>Bold & confident</option><option>Friendly & local</option><option>Luxury & premium</option><option>Helpful & educational</option></select></div>
+<div class="form-row" style="margin:0;min-width:100px"><label>Posts</label>
+<select id="contentCount"><option>30</option><option>45</option><option>60</option></select></div>
+<button class="btn btn-primary" onclick="toast('Generating branded posts with AI...')">Generate Posts</button>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px">
+${SAMPLE_POSTS.map(p=>{
+const platformColors={Instagram:'#E1306C',Facebook:'#1877F2',TikTok:'#00f2ea',X:'#1DA1F2',LinkedIn:'#0A66C2'};
+return `<div class="glass-card">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+<span style="width:8px;height:8px;border-radius:50%;background:${platformColors[p.platform]||'var(--accent)'}"></span>
+<span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:${platformColors[p.platform]||'var(--accent)'}">${p.platform}</span>
+</div>
+<div style="font-family:var(--font-display);font-size:12px;font-weight:600;margin-bottom:8px;color:var(--text)">${p.hook}</div>
+<p style="font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:8px">${p.caption}</p>
+<p style="font-size:10px;color:var(--accent);opacity:0.7">${p.hashtags}</p>
+</div>`;
+}).join('')}
+</div>
+<div class="glass-card">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Team</h3>
+<div style="display:flex;gap:16px;flex-wrap:wrap">
+${['AJ','MR','KW','TS'].map((init,i)=>`
+<div style="text-align:center">
+<div class="avatar" style="width:48px;height:48px;font-size:16px;margin-bottom:6px">${init}</div>
+<div style="font-size:11px;color:var(--text-dim)">${['Owner','Lead Tech','Installer','Sales'][i]}</div>
+</div>`).join('')}
+</div>
+</div>`;
+}
+</script>
+
+
+<script>
+// ========== AI ASSISTANT VIEW ==========
+function renderAI(){
+if(!state.chatHistory||!state.chatHistory.length){
+state.chatHistory=[{role:'ai',text:'Hey! I\'m your AI assistant for Astylez Auto. I can help you figure out who to call today, draft follow-ups, analyze your pipeline, or find upsell opportunities. What can I help with?'}];
+}
+document.getElementById('view-ai').innerHTML=`
+<h2 class="section-title">AI Assistant</h2>
+<div class="glass-card chat-container">
+<div class="chat-messages" id="chatMessages">
+${state.chatHistory.map(m=>`<div class="chat-bubble ${m.role}">${m.text}</div>`).join('')}
+</div>
+<div style="padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap">
+<button class="btn btn-sm" onclick="quickAI('Who to call today?')">Who to call today?</button>
+<button class="btn btn-sm" onclick="quickAI('Draft a follow-up')">Draft a follow-up</button>
+<button class="btn btn-sm" onclick="quickAI('Summarize the week')">Summarize the week</button>
+<button class="btn btn-sm" onclick="quickAI('Best upsell opportunities')">Best upsell opportunities</button>
+</div>
+<div class="chat-input-area">
+<textarea id="chatInput" placeholder="Ask anything about your business..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+<button class="btn btn-primary" onclick="sendChat()">Send</button>
+</div>
+</div>`;
+scrollChat();
+}
+
+function scrollChat(){
+const el=document.getElementById('chatMessages');
+if(el)el.scrollTop=el.scrollHeight;
+}
+
+function quickAI(text){
+document.getElementById('chatInput').value=text;
+sendChat();
+}
+
+function sendChat(){
+const input=document.getElementById('chatInput');
+const text=input?.value?.trim();if(!text)return;
+state.chatHistory.push({role:'user',text});
+input.value='';
+
+// Generate contextual AI response
+let response='';
+const tl=text.toLowerCase();
+if(tl.includes('call')||tl.includes('who')){
+const needsCall=state.leads.filter(l=>l.status==='New'||l.status==='Contacted');
+response=`Based on your pipeline, here are the priority calls:\n\n${needsCall.slice(0,4).map((l,i)=>`${i+1}. **${l.name}** - ${l.service} (${formatCurrency(l.value)}) - Status: ${l.status}`).join('\n')}\n\nI'd start with the highest-value New leads first. Marcus Rodriguez ($4,800 PPF) and Aisha Johnson ($4,200 wrap) are your top priority.`;
+}else if(tl.includes('follow')||tl.includes('draft')){
+const lead=state.leads.find(l=>l.status==='Contacted')||state.leads[0];
+response=`Here's a follow-up draft for ${lead.name}:\n\n"Hey ${lead.name.split(' ')[0]}, just checking in about the ${lead.service} we discussed. I've got some availability this week if you'd like to come in for a closer look. Let me know what works!"\n\nWant me to adjust the tone or make it more specific?`;
+}else if(tl.includes('summarize')||tl.includes('week')){
+const newCount=state.leads.filter(l=>l.created>Date.now()-7*86400000).length;
+const wonCount=state.leads.filter(l=>l.status==='Won').length;
+const pipeline=state.leads.filter(l=>l.status!=='Lost').reduce((s,l)=>s+l.value,0);
+response=`**Weekly Summary:**\n\n- ${newCount} new leads this week\n- ${wonCount} deals won\n- ${state.appointments.length} appointments scheduled\n- Pipeline value: ${formatCurrency(pipeline)}\n\nYour conversion rate is looking solid. The PPF and wrap services are driving the highest revenue per job.`;
+}else if(tl.includes('upsell')){
+response=`**Best Upsell Opportunities:**\n\n1. **Dana Chen** (Window Tint $450) → Suggest ceramic upgrade (+$200) or add PPF for hood\n2. **Carlos Mendez** (Rims $2,400) → Suggest ceramic tint to complete the look (+$650)\n3. **Theo Washington** (Wrap $3,200) → PPF under the wrap for double protection (+$1,500)\n\nTotal potential upsell revenue: ~$2,350. Want me to draft messages for any of these?`;
+}else{
+response=`I can help with that! Here's what I know about your current business:\n\n- ${state.leads.length} total leads in your pipeline\n- ${state.appointments.length} upcoming appointments\n- Top services: PPF, Vinyl Wrap, Window Tint\n\nIs there something specific you'd like me to dig into?`;
+}
+
+state.chatHistory.push({role:'ai',text:response});
+saveData();renderAI();
+}
+</script>
+
+
+<script>
+// ========== SETTINGS VIEW ==========
+function renderSetup(){
+const s=state.settings;
+const colors=['#00f0ff','#6366f1','#a855f7','#10b981','#f59e0b','#ef4444','#ec4899','#14b8a6'];
+document.getElementById('view-setup').innerHTML=`
+<h2 class="section-title">Settings</h2>
+<div class="glass-card" style="margin-bottom:16px">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Business Identity</h3>
+<div class="form-row-2">
+<div class="form-row"><label>Business Name</label><input id="setName" value="${s.name}" onchange="updateSetting('name',this.value)"></div>
+<div class="form-row"><label>Tagline</label><input id="setTagline" value="${s.tagline}" onchange="updateSetting('tagline',this.value)"></div>
+</div>
+<div class="form-row-2">
+<div class="form-row"><label>Phone</label><input id="setPhone" value="${s.phone}" onchange="updateSetting('phone',this.value)"></div>
+<div class="form-row"><label>Website</label><input id="setWebsite" value="${s.website}" onchange="updateSetting('website',this.value)"></div>
+</div>
+<div class="form-row"><label>About</label><textarea id="setAbout" onchange="updateSetting('about',this.value)">${s.about}</textarea></div>
+</div>
+<div class="glass-card" style="margin-bottom:16px">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Accent Color</h3>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+${colors.map(c=>`<div onclick="setAccentColor('${c}')" style="width:32px;height:32px;border-radius:8px;background:${c};cursor:pointer;border:2px solid ${c===s.accent?'#fff':'transparent'};transition:all 0.2s"></div>`).join('')}
+<input type="color" value="${s.accent}" onchange="setAccentColor(this.value)" style="width:32px;height:32px;padding:0;border:none;border-radius:8px;cursor:pointer">
+</div>
+</div>
+<div class="glass-card" style="margin-bottom:16px">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Scene Backdrop</h3>
+<div class="form-row"><label>Background Image URL</label><input placeholder="Paste image URL or leave empty for aurora" onchange="setBackdrop(this.value)"></div>
+</div>
+<div class="glass-card" style="margin-bottom:16px">
+<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Data Management</h3>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-primary" onclick="exportJSON()">Export JSON</button>
+<button class="btn" onclick="reloadSample()">Reload Sample Data</button>
+<button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+</div>
+</div>
+<div class="glass-card" style="border-left:3px solid var(--secondary);padding:12px 16px">
+<p style="font-size:12px;color:var(--text-dim)">Supabase: Connect your Supabase project for cloud sync. Add your project URL and anon key in the environment to enable real-time multi-device access.</p>
+</div>`;
+}
+
+function updateSetting(key,val){
+state.settings[key]=val;saveData();
+if(key==='name'){document.querySelector('.brand-info h1').textContent=val}
+}
+
+function setAccentColor(color){
+state.settings.accent=color;saveData();
+document.documentElement.style.setProperty('--accent',color);
+const r=parseInt(color.slice(1,3),16),g=parseInt(color.slice(3,5),16),b=parseInt(color.slice(5,7),16);
+document.documentElement.style.setProperty('--accent-rgb',`${r},${g},${b}`);
+renderSetup();
+}
+
+function setBackdrop(url){
+const aurora=document.querySelector('.aurora-bg');
+if(url){aurora.style.backgroundImage=`url(${url})`;aurora.style.backgroundSize='cover';aurora.style.backgroundPosition='center'}
+else{aurora.style.backgroundImage='';aurora.style.backgroundSize=''}
+}
+
+function exportJSON(){
+const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');a.href=url;a.download='astylez-data.json';a.click();
+URL.revokeObjectURL(url);toast('Data exported');
+}
+
+function reloadSample(){
+if(!confirm('Replace all data with sample data?'))return;
+state={leads:[...DEFAULT_LEADS],appointments:[...DEFAULT_APPTS],settings:{...DEFAULT_SETTINGS},chatHistory:[]};
+saveData();toast('Sample data loaded');renderDashboard();
+}
+
+function clearAllData(){
+if(!confirm('Delete ALL data? This cannot be undone.'))return;
+state={leads:[],appointments:[],settings:{...DEFAULT_SETTINGS},chatHistory:[]};
+saveData();toast('All data cleared');renderDashboard();
+}
+</script>
+
+
+<script>
+// ========== INIT ==========
+// Apply saved accent color
+if(state.settings.accent && state.settings.accent !== '#00f0ff'){
+setAccentColor(state.settings.accent);
+}
+
+// Render initial dashboard
+renderDashboard();
+</script>
+
 </body>
 </html>
