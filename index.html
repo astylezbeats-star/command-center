@@ -2,982 +2,757 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Astylez Auto - Command Center</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ASTYLEZ AUTO | Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
---accent:#00f0ff;--accent-rgb:0,240,255;
---secondary:#6366f1;--secondary-rgb:99,102,241;
---purple:#a855f7;--purple-rgb:168,85,247;
---bg:#0a0a0f;--surface:rgba(255,255,255,0.03);
---glass:rgba(255,255,255,0.05);--glass-border:rgba(255,255,255,0.1);
---text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#475569;
---success:#10b981;--warning:#f59e0b;--danger:#ef4444;
---radius:12px;--radius-lg:16px;--radius-xl:24px;
---font-display:'Orbitron',sans-serif;
---font-body:'Inter',sans-serif;
---font-mono:'JetBrains Mono',monospace;
-}
+:root{--bg-deep:#050810;--bg-mid:#0a0e1a;--bg-card:#0d1424;--cyan:#00f0ff;--magenta:#ff2d7b;--green:#00ff88;--amber:#ff8800;--text-bright:#e0f4ff;--text-dim:#7a9cb8;--text-muted:#3a5068;--grid:rgba(0,240,255,0.05)}
+@property --num{syntax:"<integer>";initial-value:0;inherits:false}
 html{scroll-behavior:smooth}
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.5}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(var(--accent-rgb),0.3);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:rgba(var(--accent-rgb),0.5)}
-/* Background Aurora */
-.aurora-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-.aurora-bg::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 50%,rgba(var(--accent-rgb),0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(var(--secondary-rgb),0.08) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(var(--purple-rgb),0.06) 0%,transparent 50%)}
-.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:drift 20s ease-in-out infinite}
-.orb-1{width:400px;height:400px;background:rgba(var(--accent-rgb),0.15);top:10%;left:10%;animation-delay:0s}
-.orb-2{width:350px;height:350px;background:rgba(var(--secondary-rgb),0.12);top:60%;right:10%;animation-delay:-7s}
-.orb-3{width:300px;height:300px;background:rgba(var(--purple-rgb),0.1);bottom:10%;left:40%;animation-delay:-14s}
-@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(30px,-20px) scale(1.05)}50%{transform:translate(-20px,30px) scale(0.95)}75%{transform:translate(20px,20px) scale(1.02)}}
-.grid-overlay{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(var(--accent-rgb),0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--accent-rgb),0.02) 1px,transparent 1px);background-size:50px 50px}
-.stars{position:fixed;inset:0;z-index:0;pointer-events:none}
-.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:0.3;animation:twinkle 3s ease-in-out infinite}
-@keyframes twinkle{0%,100%{opacity:0.2}50%{opacity:0.6}}
-/* HUD Bar */
-.hud-bar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(10,10,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
-.hud-left{display:flex;align-items:center;gap:12px}
-.logo-mark{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--secondary),var(--purple));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:18px;color:#fff}
-.brand-info h1{font-family:var(--font-display);font-size:14px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.brand-info p{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px}
-.hud-right{display:flex;align-items:center;gap:16px}
-.status-pill{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;background:rgba(var(--accent-rgb),0.1);border:1px solid rgba(var(--accent-rgb),0.3);font-size:10px;font-family:var(--font-mono);color:var(--accent);text-transform:uppercase;letter-spacing:1px}
-.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
-.clock{font-family:var(--font-mono);font-size:13px;color:var(--text-dim)}
-/* Main Content */
-.main-content{position:relative;z-index:1;padding:24px;padding-bottom:100px;max-width:1400px;margin:0 auto}
-.view{display:none;animation:fadeIn 0.3s ease}
-.view.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-/* Bottom Nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:12px 16px;background:rgba(10,10,15,0.9);backdrop-filter:blur(20px);border-top:1px solid var(--glass-border);display:flex;justify-content:center;gap:4px}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 12px;border-radius:12px;background:var(--glass);border:1px solid transparent;cursor:pointer;transition:all 0.3s;color:var(--text-dim);font-size:9px;font-family:var(--font-body);text-transform:uppercase;letter-spacing:0.5px;min-width:60px}
-.nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
-.nav-btn:hover{background:rgba(var(--accent-rgb),0.1);color:var(--text);border-color:rgba(var(--accent-rgb),0.2)}
-.nav-btn.active{background:rgba(var(--accent-rgb),0.15);color:var(--accent);border-color:rgba(var(--accent-rgb),0.4);box-shadow:0 0 20px rgba(var(--accent-rgb),0.2)}
-/* Glass Card */
-.glass-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:20px;position:relative;overflow:hidden}
-.glass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
-/* KPI Cards */
+body{font-family:'Inter',sans-serif;background:var(--bg-deep);color:var(--text-bright);min-height:100vh;overflow-x:hidden;position:relative;padding-top:64px;padding-bottom:80px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+
+.grid-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.grid-bg::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:repeating-linear-gradient(90deg,var(--grid) 0,var(--grid) 1px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,var(--grid) 0,var(--grid) 1px,transparent 1px,transparent 80px);transform:perspective(500px) rotateX(60deg);transform-origin:center top;animation:gridPulse 4s ease-in-out infinite}
+@keyframes gridPulse{0%,100%{opacity:.4}50%{opacity:.7}}
+.scanlines{position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,240,255,0.015) 2px,rgba(0,240,255,0.015) 4px);animation:scanDrift 8s linear infinite}
+@keyframes scanDrift{0%{transform:translateY(0)}100%{transform:translateY(4px)}}
+.particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+.particles::before{content:'';position:absolute;width:2px;height:2px;border-radius:50%;box-shadow:100px 50px 0 0 rgba(0,240,255,0.4),300px 150px 0 0 rgba(255,45,123,0.3),500px 80px 0 0 rgba(0,255,136,0.3),700px 200px 0 0 rgba(0,240,255,0.2),150px 300px 0 0 rgba(255,136,0,0.3),900px 100px 0 0 rgba(0,240,255,0.4),250px 400px 0 0 rgba(255,45,123,0.2),600px 350px 0 0 rgba(0,255,136,0.4),800px 400px 0 0 rgba(0,240,255,0.3),400px 250px 0 0 rgba(255,136,0,0.2),50px 200px 0 0 rgba(0,240,255,0.5),750px 300px 0 0 rgba(255,45,123,0.4),1000px 150px 0 0 rgba(0,255,136,0.3),1100px 350px 0 0 rgba(0,240,255,0.2),200px 500px 0 0 rgba(255,136,0,0.4);animation:particleFloat 20s linear infinite}
+@keyframes particleFloat{0%{transform:translateY(0) translateX(0)}50%{transform:translateY(-20px) translateX(10px)}100%{transform:translateY(0) translateX(0)}}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:60px;z-index:100;background:linear-gradient(180deg,rgba(10,14,26,0.98),rgba(10,14,26,0.9));border-bottom:1px solid rgba(0,240,255,0.15);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.logo-area{display:flex;align-items:center;gap:12px}
+.hex-logo{width:36px;height:36px;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:linear-gradient(135deg,var(--cyan),var(--magenta));font-family:'Orbitron',monospace;font-weight:900;font-size:16px;color:#fff}
+.brand{display:flex;flex-direction:column}.brand-name{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--cyan);text-shadow:0 0 10px rgba(0,240,255,0.5);letter-spacing:2px}.brand-sub{font-size:10px;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase}
+.status-area{display:flex;align-items:center;gap:16px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(0.85)}}
+.clock{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-dim)}.clock-date{font-size:10px;color:var(--text-muted);text-align:right}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:70px;z-index:100;background:linear-gradient(0deg,rgba(5,8,16,0.98),rgba(10,14,26,0.95));border-top:1px solid rgba(0,240,255,0.15);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;gap:4px;padding:0 10px}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 14px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;border-radius:8px;transition:all .3s;position:relative;font-size:10px;font-family:'Inter',sans-serif}
+.nav-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5}
+.nav-btn.active{color:var(--cyan)}.nav-btn.active::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);border-radius:2px}
+.nav-btn:hover{color:var(--text-bright);background:rgba(0,240,255,0.05)}
+
+.hud-card{position:relative;background:var(--bg-card);border:1px solid rgba(0,240,255,0.1);padding:20px;margin-bottom:16px;transition:transform .3s,box-shadow .3s}
+.hud-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,240,255,0.1)}
+.hud-card::before,.hud-card::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--cyan);border-style:solid}
+.hud-card::before{top:-1px;left:-1px;border-width:2px 0 0 2px}.hud-card::after{top:-1px;right:-1px;border-width:2px 2px 0 0}
+.card-title{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:2px;color:var(--text-muted);margin-bottom:12px;text-transform:uppercase}
+.corner-bl{position:absolute;bottom:-1px;left:-1px;width:12px;height:12px;border-style:solid;border-color:var(--cyan);border-width:0 0 2px 2px}
+.corner-br{position:absolute;bottom:-1px;right:-1px;width:12px;height:12px;border-style:solid;border-color:var(--cyan);border-width:0 2px 2px 0}
+
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
-.kpi-card{padding:20px;animation:breathe 4s ease-in-out infinite}
-.kpi-card:nth-child(2){animation-delay:-1s}
-.kpi-card:nth-child(3){animation-delay:-2s}
-.kpi-card:nth-child(4){animation-delay:-3s}
-@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px}
-.kpi-value{font-family:var(--font-mono);font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.kpi-sub{font-size:11px;color:var(--text-muted);margin-top:4px}
-/* Section headers */
-.section-title{font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:16px;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-/* Buttons */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:1px solid var(--glass-border);background:var(--glass);color:var(--text);font-size:13px;cursor:pointer;transition:all 0.2s;font-family:var(--font-body)}
-.btn:hover{background:rgba(var(--accent-rgb),0.1);border-color:rgba(var(--accent-rgb),0.3)}
-.btn-primary{background:rgba(var(--accent-rgb),0.15);border-color:rgba(var(--accent-rgb),0.4);color:var(--accent)}
-.btn-primary:hover{background:rgba(var(--accent-rgb),0.25);box-shadow:0 0 15px rgba(var(--accent-rgb),0.2)}
-.btn-sm{padding:5px 10px;font-size:11px}
-.btn-danger{border-color:rgba(239,68,68,0.4);color:var(--danger)}
-.btn-danger:hover{background:rgba(239,68,68,0.15)}
-/* Status Chips */
-.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.2s}
-.chip-new{background:rgba(var(--accent-rgb),0.15);color:var(--accent);border:1px solid rgba(var(--accent-rgb),0.3)}
-.chip-contacted{background:rgba(245,158,11,0.15);color:var(--warning);border:1px solid rgba(245,158,11,0.3)}
-.chip-won{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
-.chip-lost{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
-.chip-scheduled{background:rgba(var(--secondary-rgb),0.15);color:var(--secondary);border:1px solid rgba(var(--secondary-rgb),0.3)}
-.chip-confirmed{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
-.chip-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
-/* Inputs */
-input,select,textarea{background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;font-family:var(--font-body);width:100%;transition:border-color 0.2s}
-input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(var(--accent-rgb),0.5);box-shadow:0 0 10px rgba(var(--accent-rgb),0.1)}
-textarea{resize:vertical;min-height:80px}
-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
-label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);margin-bottom:6px}
-/* Modal */
-.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.active{display:flex}
-.modal{background:rgba(15,15,25,0.95);backdrop-filter:blur(30px);border:1px solid var(--glass-border);border-radius:var(--radius-xl);padding:28px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;animation:modalIn 0.3s ease}
-@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.modal-header h2{font-family:var(--font-display);font-size:16px;color:var(--accent)}
-.modal-close{width:28px;height:28px;border-radius:6px;background:var(--glass);border:1px solid var(--glass-border);color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
-.modal-close:hover{background:rgba(239,68,68,0.2);color:var(--danger)}
-.form-row{margin-bottom:14px}
-.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-/* Table */
-.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--glass-border)}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:12px 14px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);background:rgba(255,255,255,0.02);border-bottom:1px solid var(--glass-border)}
-td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.03)}
-tr:hover td{background:rgba(var(--accent-rgb),0.02)}
-/* Toast */
-.toast-container{position:fixed;top:80px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px}
-.toast{padding:12px 20px;border-radius:10px;background:rgba(15,15,25,0.95);backdrop-filter:blur(20px);border:1px solid rgba(var(--accent-rgb),0.3);color:var(--text);font-size:13px;animation:slideIn 0.3s ease;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-/* Chart */
-.bar-chart{display:flex;align-items:flex-end;gap:8px;height:120px;padding:10px 0}
-.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
-.bar{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--accent),var(--secondary));min-height:4px;transition:height 0.5s ease}
-.bar-label{font-size:9px;color:var(--text-muted);font-family:var(--font-mono)}
-/* Avatar */
-.avatar{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--secondary),var(--purple));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
-/* Toggle Switch */
-.toggle{position:relative;width:40px;height:22px;border-radius:11px;background:rgba(255,255,255,0.1);border:1px solid var(--glass-border);cursor:pointer;transition:all 0.3s}
-.toggle.active{background:rgba(var(--accent-rgb),0.3);border-color:rgba(var(--accent-rgb),0.5)}
-.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--text-dim);transition:all 0.3s}
-.toggle.active::after{left:20px;background:var(--accent)}
-/* Chat */
-.chat-container{display:flex;flex-direction:column;height:500px}
+.kpi-value{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--text-bright)}
+.kpi-label{font-size:11px;color:var(--text-muted);margin-top:4px;letter-spacing:1px}
+.kpi-change{display:inline-flex;align-items:center;gap:4px;font-size:11px;margin-top:6px;padding:2px 8px;border-radius:4px}
+.kpi-change.up{color:var(--green);background:rgba(0,255,136,0.1)}.kpi-change.down{color:var(--magenta);background:rgba(255,45,123,0.1)}
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:24px}
+.bar-chart{display:flex;align-items:flex-end;justify-content:space-around;height:160px;padding-top:20px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1}
+.bar{width:24px;border-radius:4px 4px 0 0;background:linear-gradient(0deg,var(--cyan),rgba(0,240,255,0.6));box-shadow:0 0 10px rgba(0,240,255,0.3);transition:height 1.5s cubic-bezier(0.4,0,0.2,1)}
+.bar-label{font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+.line-path{fill:none;stroke:var(--cyan);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1000;stroke-dashoffset:1000;animation:drawLine 2s ease forwards 0.5s}
+@keyframes drawLine{to{stroke-dashoffset:0}}
+.line-area{opacity:0;animation:fadeIn 1s ease forwards 2s}@keyframes fadeIn{to{opacity:1}}
+.donut-ring{fill:none;stroke-width:8;stroke-linecap:round}
+.flow-container{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 0}
+.flow-node{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 16px;border:1px solid rgba(0,240,255,0.3);background:rgba(0,240,255,0.05);border-radius:4px;min-width:70px}
+.flow-node-label{font-size:10px;color:var(--text-dim);font-family:'Orbitron',monospace;letter-spacing:1px}
+.flow-node-value{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--cyan)}
+.flow-arrow{width:30px;height:2px;background:linear-gradient(90deg,var(--cyan),transparent);position:relative;animation:flowPulse 2s ease-in-out infinite}
+.flow-arrow::after{content:'';position:absolute;right:0;top:-3px;border:4px solid transparent;border-left:6px solid var(--cyan)}
+@keyframes flowPulse{0%,100%{opacity:.4}50%{opacity:1}}
+.ring-progress{position:relative;width:44px;height:44px}.ring-progress svg{transform:rotate(-90deg)}
+.ring-progress circle{fill:none;stroke-width:3}.ring-bg{stroke:rgba(0,240,255,0.1)}.ring-fill{stroke:var(--cyan);stroke-linecap:round;transition:stroke-dashoffset 1.5s ease}
+
+.hud-table{width:100%;border-collapse:collapse;font-size:13px}
+.hud-table th{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:1px;color:var(--text-muted);text-align:left;padding:10px 12px;border-bottom:1px solid rgba(0,240,255,0.1)}
+.hud-table td{padding:10px 12px;border-bottom:1px solid rgba(0,240,255,0.05);color:var(--text-dim)}
+.hud-table tr:hover td{background:rgba(0,240,255,0.03);color:var(--text-bright)}
+.status-chip{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:0.5px}
+.status-new{background:rgba(0,240,255,0.15);color:var(--cyan);border:1px solid rgba(0,240,255,0.3)}
+.status-contacted{background:rgba(255,136,0,0.15);color:var(--amber);border:1px solid rgba(255,136,0,0.3)}
+.status-won{background:rgba(0,255,136,0.15);color:var(--green);border:1px solid rgba(0,255,136,0.3)}
+.status-lost{background:rgba(255,45,123,0.15);color:var(--magenta);border:1px solid rgba(255,45,123,0.3)}
+.status-quoted{background:rgba(138,43,226,0.15);color:#b366ff;border:1px solid rgba(138,43,226,0.3)}
+.status-booked{background:rgba(0,200,255,0.2);color:#66ddff;border:1px solid rgba(0,200,255,0.4)}
+
+.modal-overlay{position:fixed;inset:0;z-index:10000;background:rgba(5,8,16,0.85);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg-mid);border:1px solid rgba(0,240,255,0.2);padding:28px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;position:relative}
+.modal::before,.modal::after{content:'';position:absolute;width:16px;height:16px;border-color:var(--cyan);border-style:solid}
+.modal::before{top:-1px;left:-1px;border-width:2px 0 0 2px}.modal::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+.modal h3{font-family:'Orbitron',monospace;font-size:14px;color:var(--cyan);margin-bottom:20px;letter-spacing:2px}
+.form-group{margin-bottom:14px}.form-group label{display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;letter-spacing:1px;font-family:'Orbitron',monospace}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.15);color:var(--text-bright);font-family:'Inter',sans-serif;font-size:13px;border-radius:4px;outline:none;transition:border-color .3s}
+.form-group input:focus,.form-group select:focus{border-color:var(--cyan);box-shadow:0 0 8px rgba(0,240,255,0.2)}
+.btn{padding:10px 20px;border:1px solid;border-radius:4px;cursor:pointer;font-family:'Orbitron',monospace;font-size:11px;letter-spacing:1px;transition:all .3s;background:transparent}
+.btn-cyan{border-color:var(--cyan);color:var(--cyan)}.btn-cyan:hover{background:rgba(0,240,255,0.15);box-shadow:0 0 15px rgba(0,240,255,0.3)}
+.btn-magenta{border-color:var(--magenta);color:var(--magenta)}.btn-magenta:hover{background:rgba(255,45,123,0.15)}
+.btn-green{border-color:var(--green);color:var(--green)}.btn-green:hover{background:rgba(0,255,136,0.15)}
+.btn-sm{padding:6px 12px;font-size:10px}
+.feed-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(0,240,255,0.05)}
+.feed-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.feed-text{font-size:12px;color:var(--text-dim)}.feed-time{font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.chat-container{display:flex;flex-direction:column;height:400px}
 .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-.chat-bubble{max-width:80%;padding:12px 16px;border-radius:16px;font-size:13px;line-height:1.5}
-.chat-bubble.ai{align-self:flex-start;background:var(--glass);border:1px solid var(--glass-border);border-bottom-left-radius:4px}
-.chat-bubble.user{align-self:flex-end;background:linear-gradient(135deg,rgba(var(--accent-rgb),0.2),rgba(var(--secondary-rgb),0.2));border:1px solid rgba(var(--accent-rgb),0.3);border-bottom-right-radius:4px}
-.chat-input-area{display:flex;gap:8px;padding:12px;border-top:1px solid var(--glass-border)}
-.chat-input-area textarea{min-height:40px;max-height:100px;resize:none}
-/* Responsive */
-@media(max-width:768px){
-.hud-bar{padding:10px 16px}
-.brand-info p{display:none}
-.bottom-nav{gap:2px;padding:8px}
-.nav-btn{min-width:44px;padding:6px 8px;font-size:0}
-.nav-btn svg{width:20px;height:20px}
-.main-content{padding:16px;padding-bottom:80px}
-.kpi-grid{grid-template-columns:repeat(2,1fr)}
-.form-row-2{grid-template-columns:1fr}
-}
-@media(prefers-reduced-motion:reduce){
-.orb,.kpi-card,.star{animation:none!important}
-.view{animation:none!important}
-}
+.chat-bubble{max-width:80%;padding:12px 16px;border-radius:12px;font-size:13px;line-height:1.5}
+.chat-bubble.ai{background:rgba(0,240,255,0.08);border:1px solid rgba(0,240,255,0.15);align-self:flex-start;color:var(--text-dim)}
+.chat-bubble.user{background:rgba(255,45,123,0.08);border:1px solid rgba(255,45,123,0.15);align-self:flex-end;color:var(--text-dim)}
+.chat-input-area{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(0,240,255,0.1)}
+.chat-input-area input{flex:1;padding:10px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.15);color:var(--text-bright);border-radius:4px;font-size:13px;outline:none}
+.schedule-item{display:flex;gap:16px;padding:14px;margin-bottom:10px;border:1px solid rgba(0,240,255,0.08);background:rgba(0,240,255,0.02)}
+.schedule-time{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);min-width:60px}
+.schedule-info{flex:1}.schedule-info h4{font-size:13px;color:var(--text-bright);margin-bottom:4px}.schedule-info p{font-size:11px;color:var(--text-muted)}
+.content-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.content-card{border:1px solid rgba(0,240,255,0.08);padding:16px;background:rgba(0,240,255,0.02)}
+.content-card h4{font-size:13px;margin-bottom:8px;color:var(--text-bright)}.content-card p{font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:10px}
+.platform-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:9px;font-weight:600;margin-right:4px}
+.settings-group{margin-bottom:24px;padding:20px;border:1px solid rgba(0,240,255,0.08);background:rgba(0,240,255,0.02)}
+.settings-group h4{font-family:'Orbitron',monospace;font-size:12px;color:var(--cyan);margin-bottom:16px;letter-spacing:1px}
+.color-options{display:flex;gap:10px;margin-top:8px}
+.color-opt{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .3s}
+.color-opt.active,.color-opt:hover{border-color:#fff;transform:scale(1.1)}
+.search-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:200px;padding:10px 14px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.12);color:var(--text-bright);border-radius:4px;font-size:13px;outline:none}
+.search-bar input:focus{border-color:var(--cyan)}
+.search-bar select{padding:10px;background:var(--bg-card);border:1px solid rgba(0,240,255,0.12);color:var(--text-dim);border-radius:4px;font-size:12px;outline:none}
+.toggle-group{display:flex;gap:8px;margin-bottom:16px}.toggle-btn{padding:8px 16px;border:1px solid rgba(0,240,255,0.2);background:transparent;color:var(--text-dim);font-size:12px;cursor:pointer;border-radius:4px;transition:all .3s}
+.toggle-btn.active{background:rgba(0,240,255,0.15);color:var(--cyan);border-color:var(--cyan)}
+.quick-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.quick-action{padding:8px 14px;border:1px solid rgba(0,240,255,0.2);border-radius:20px;font-size:11px;color:var(--text-dim);cursor:pointer;transition:all .3s}
+.quick-action:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,240,255,0.05)}
+.sparkline{display:flex;align-items:flex-end;gap:2px;height:30px}.sparkline .spark-bar{width:4px;border-radius:2px;background:var(--cyan);opacity:.6;animation:sparkRise 1s ease forwards}
+@keyframes sparkRise{from{height:0}}
+.voice-metric{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid rgba(0,240,255,0.06);margin-bottom:8px}
+.voice-metric .vm-label{font-size:11px;color:var(--text-muted);flex:1}.voice-metric .vm-value{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--text-bright)}
+@media(max-width:768px){.kpi-grid{grid-template-columns:1fr 1fr}.chart-grid{grid-template-columns:1fr}.flow-container{flex-direction:column}.hud-table{font-size:11px}.nav-btn{padding:8px 8px;font-size:9px}.top-bar{padding:0 12px}.brand-name{font-size:11px}}
+@media(max-width:480px){.kpi-grid{grid-template-columns:1fr}.nav-btn span{display:none}}
 </style>
 </head>
 <body>
-<!-- Background -->
-<div class="aurora-bg">
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-</div>
-<div class="grid-overlay"></div>
-<div class="stars" id="stars"></div>
+<div class="grid-bg"></div>
+<div class="scanlines"></div>
+<div class="particles"></div>
 
-<!-- Toast Container -->
-<div class="toast-container" id="toastContainer"></div>
-
-<!-- HUD Bar -->
-<header class="hud-bar">
-<div class="hud-left">
-<div class="logo-mark">A</div>
-<div class="brand-info">
-<h1>Astylez Auto</h1>
-<p>Command Center</p>
+<header class="top-bar">
+<div class="logo-area">
+<div class="hex-logo">A</div>
+<div class="brand"><span class="brand-name">ASTYLEZ AUTO</span><span class="brand-sub">Command Center</span></div>
 </div>
-</div>
-<div class="hud-right">
-<div class="status-pill"><span class="pulse-dot"></span>SYSTEM ONLINE</div>
-<div class="clock" id="clock">00:00:00</div>
+<div class="status-area">
+<div class="status-dot"></div>
+<div><div class="clock" id="clock">00:00:00</div><div class="clock-date" id="clockDate">---</div></div>
 </div>
 </header>
 
-<!-- Main Content -->
-<main class="main-content">
-<!-- DASHBOARD VIEW -->
-<div class="view active" id="view-home"></div>
-<!-- LEADS VIEW -->
-<div class="view" id="view-leads"></div>
-<!-- SCHEDULE VIEW -->
-<div class="view" id="view-schedule"></div>
-<!-- VOICE VIEW -->
-<div class="view" id="view-voice"></div>
-<!-- MESSAGES VIEW -->
-<div class="view" id="view-messages"></div>
-<!-- CONTENT VIEW -->
-<div class="view" id="view-content"></div>
-<!-- AI VIEW -->
-<div class="view" id="view-ai"></div>
-<!-- SETTINGS VIEW -->
-<div class="view" id="view-setup"></div>
-</main>
+<main id="mainContent" style="position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:20px"></main>
 
-<!-- Bottom Navigation -->
-<nav class="bottom-nav">
-<button class="nav-btn active" data-view="home"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
-<button class="nav-btn" data-view="leads"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Leads</span></button>
-<button class="nav-btn" data-view="schedule"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Schedule</span></button>
-<button class="nav-btn" data-view="voice"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>Voice</span></button>
-<button class="nav-btn" data-view="messages"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Messages</span></button>
-<button class="nav-btn" data-view="content"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Content</span></button>
-<button class="nav-btn" data-view="ai"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.27A7 7 0 0 1 14 23h-4a7 7 0 0 1-6.73-5H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="9" cy="15" r="1"/><circle cx="15" cy="15" r="1"/></svg><span>AI</span></button>
-<button class="nav-btn" data-view="setup"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68 1.65 1.65 0 0 0 9 3.17V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Setup</span></button>
-</nav>
+<nav class="bottom-nav" id="bottomNav"></nav>
 
-<!-- Lead Modal -->
-<div class="modal-overlay" id="leadModal">
-<div class="modal">
-<div class="modal-header"><h2>Lead Details</h2><button class="modal-close" onclick="closeModal('leadModal')">&times;</button></div>
-<div class="form-row"><label>Full Name</label><input id="leadName" placeholder="Enter name"></div>
-<div class="form-row"><label>Phone / Email</label><input id="leadContact" placeholder="Phone or email"></div>
-<div class="form-row-2">
-<div class="form-row"><label>Service</label><select id="leadService"><option>Window Tint</option><option>PPF</option><option>Vinyl Wrap</option><option>Paint Correction</option><option>Rim & Tire</option><option>Full Detail</option><option>Ceramic Tint</option><option>Full PPF + Tint</option><option>Color Change Wrap</option><option>Other</option></select></div>
-<div class="form-row"><label>Value ($)</label><input id="leadValue" type="number" placeholder="0"></div>
-</div>
-<div class="form-row-2">
-<div class="form-row"><label>Status</label><select id="leadStatus"><option>New</option><option>Contacted</option><option>Won</option><option>Lost</option></select></div>
-<div class="form-row"><label>Source</label><select id="leadSource"><option>Walk-in</option><option>Instagram</option><option>Referral</option><option>Google</option><option>Facebook</option><option>Website</option><option>Phone</option></select></div>
-</div>
-<div class="form-row-2">
-<div class="form-row"><label>Year</label><input id="leadYear" placeholder="2024"></div>
-<div class="form-row"><label>Make</label><input id="leadMake" placeholder="Tesla"></div>
-</div>
-<div class="form-row"><label>Model</label><input id="leadModel" placeholder="Model 3"></div>
-<div class="form-row"><label>Notes</label><textarea id="leadNotes" placeholder="Additional notes..."></textarea></div>
-<input type="hidden" id="leadId">
-<div style="display:flex;gap:8px;margin-top:16px">
-<button class="btn btn-primary" onclick="saveLead()">Save Lead</button>
-<button class="btn" onclick="closeModal('leadModal')">Cancel</button>
-</div>
-</div>
-</div>
-
-<!-- Appointment Modal -->
-<div class="modal-overlay" id="apptModal">
-<div class="modal">
-<div class="modal-header"><h2>Appointment</h2><button class="modal-close" onclick="closeModal('apptModal')">&times;</button></div>
-<div class="form-row"><label>Lead</label><select id="apptLead"></select></div>
-<div class="form-row-2">
-<div class="form-row"><label>Date</label><input id="apptDate" type="date"></div>
-<div class="form-row"><label>Time</label><input id="apptTime" type="time"></div>
-</div>
-<div class="form-row"><label>Service</label><select id="apptService"><option>Window Tint</option><option>PPF Install</option><option>Vinyl Wrap</option><option>Paint Correction</option><option>Rim Fitting</option><option>Full Detail</option><option>Wrap Consultation</option><option>Estimate</option></select></div>
-<div class="form-row"><label>Confirm Via</label><select id="apptConfirm"><option>Text</option><option>Call</option><option>Both</option></select></div>
-<input type="hidden" id="apptId">
-<div style="display:flex;gap:8px;margin-top:16px">
-<button class="btn btn-primary" onclick="saveAppt()">Save Appointment</button>
-<button class="btn" onclick="closeModal('apptModal')">Cancel</button>
-</div>
-</div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+<div class="modal" id="modalContent"></div>
 </div>
 
 <script>
-// ========== DATA LAYER ==========
-const STORAGE_KEY = 'astylez_data';
-const DEFAULT_LEADS = [
-{id:'l1',name:'Marcus Rodriguez',contact:'(720) 555-0182',service:'Full PPF',value:4800,status:'New',source:'Instagram',year:'2024',make:'Tesla',model:'Model 3',notes:'Interested in full front coverage',created:Date.now()-86400000*1},
-{id:'l2',name:'Dana Chen',contact:'dana.c@email.com',service:'Window Tint',value:450,status:'Contacted',source:'Google',year:'2023',make:'BMW',model:'X5',notes:'Wants ceramic tint all around',created:Date.now()-86400000*2},
-{id:'l3',name:'Theo Washington',contact:'(303) 555-0119',service:'Vinyl Wrap',value:3200,status:'New',source:'Referral',year:'2024',make:'Dodge',model:'Charger',notes:'Satin black full wrap',created:Date.now()-86400000*0},
-{id:'l4',name:'Priya Patel',contact:'priya@email.com',service:'Paint Correction',value:800,status:'Won',source:'Website',year:'2022',make:'Mercedes',model:'C300',notes:'Stage 2 correction + ceramic coat',created:Date.now()-86400000*3},
-{id:'l5',name:'Carlos Mendez',contact:'(720) 555-0143',service:'Rim & Tire',value:2400,status:'Contacted',source:'Facebook',year:'2023',make:'Chevy',model:'Silverado',notes:'22" black wheels + tires',created:Date.now()-86400000*1},
-{id:'l6',name:'Hannah Brooks',contact:'hannah.b@email.com',service:'Ceramic Tint',value:650,status:'New',source:'Instagram',year:'2024',make:'Audi',model:'Q5',notes:'Full car ceramic tint',created:Date.now()-86400000*0},
-{id:'l7',name:'Devon Marshall',contact:'(303) 555-0167',service:'Full PPF + Tint',value:5800,status:'Won',source:'Referral',year:'2024',make:'Porsche',model:'911',notes:'Full body PPF + ceramic tint',created:Date.now()-86400000*5},
-{id:'l8',name:'Aisha Johnson',contact:'aisha@email.com',service:'Color Change Wrap',value:4200,status:'New',source:'Phone',year:'2023',make:'Ford',model:'Mustang',notes:'Midnight purple color change',created:Date.now()-86400000*2}
-];
+'use strict';
 
-function getToday(){return new Date().toISOString().split('T')[0]}
-function getTomorrow(){const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().split('T')[0]}
-function getDayAfter(){const d=new Date();d.setDate(d.getDate()+2);return d.toISOString().split('T')[0]}
-function getFourDays(){const d=new Date();d.setDate(d.getDate()+4);return d.toISOString().split('T')[0]}
+// ===== DATA =====
+const DEFAULT_LEADS = [
+{id:1,name:"Marcus Rodriguez",contact:"(720) 555-0182",service:"Full PPF",value:4800,status:"new",vehicle:"2024 Tesla Model 3",date:"2024-01-15"},
+{id:2,name:"Dana Chen",contact:"dana.c@email.com",service:"Window Tint",value:450,status:"contacted",vehicle:"2023 BMW X5",date:"2024-01-14"},
+{id:3,name:"Theo Washington",contact:"(303) 555-0119",service:"Vinyl Wrap",value:3200,status:"new",vehicle:"2024 Dodge Charger",date:"2024-01-14"},
+{id:4,name:"Priya Patel",contact:"priya@email.com",service:"Paint Correction",value:800,status:"won",vehicle:"2022 Mercedes C300",date:"2024-01-13"},
+{id:5,name:"Carlos Mendez",contact:"(720) 555-0143",service:"Rim & Tire Package",value:2400,status:"contacted",vehicle:"2023 Chevy Silverado",date:"2024-01-12"},
+{id:6,name:"Hannah Brooks",contact:"hannah.b@email.com",service:"Ceramic Tint",value:650,status:"new",vehicle:"2024 Audi Q5",date:"2024-01-12"},
+{id:7,name:"Devon Marshall",contact:"(303) 555-0167",service:"Full PPF + Tint",value:5800,status:"won",vehicle:"2024 Porsche 911",date:"2024-01-11"},
+{id:8,name:"Aisha Johnson",contact:"aisha@email.com",service:"Color Change Wrap",value:4200,status:"new",vehicle:"2023 Ford Mustang",date:"2024-01-10"}
+];
 
 const DEFAULT_APPTS = [
-{id:'a1',leadId:'l1',leadName:'Marcus Rodriguez',date:getTomorrow(),time:'09:00',service:'Full PPF Install',confirmVia:'Text',status:'Scheduled'},
-{id:'a2',leadId:'l3',leadName:'Theo Washington',date:getDayAfter(),time:'14:30',service:'Wrap Consultation',confirmVia:'Call',status:'Confirmed'},
-{id:'a3',leadId:'l5',leadName:'Carlos Mendez',date:getFourDays(),time:'10:00',service:'Rim Fitting',confirmVia:'Both',status:'Scheduled'}
+{id:1,date:getRelativeDate(1),time:"09:00",client:"Marcus Rodriguez",service:"Full PPF",vehicle:"2024 Tesla Model 3",duration:"4h"},
+{id:2,date:getRelativeDate(1),time:"14:00",client:"Dana Chen",service:"Window Tint",vehicle:"2023 BMW X5",duration:"2h"},
+{id:3,date:getRelativeDate(2),time:"10:00",client:"Hannah Brooks",service:"Ceramic Tint",vehicle:"2024 Audi Q5",duration:"2.5h"}
 ];
 
-const DEFAULT_SETTINGS = {name:'Astylez Auto',tagline:'Command Center',phone:'(720) 555-AUTO',website:'www.astylezauto.com',about:'Premium automotive styling: window tint, PPF, vinyl wraps, paint correction, and rim & tire packages.',accent:'#00f0ff'};
+function getRelativeDate(daysFromNow){const d=new Date();d.setDate(d.getDate()+daysFromNow);return d.toISOString().split('T')[0]}
 
-let state = loadData();
-function loadData(){
-const saved = localStorage.getItem(STORAGE_KEY);
-if(saved){try{return JSON.parse(saved)}catch(e){}}
-return {leads:[...DEFAULT_LEADS],appointments:[...DEFAULT_APPTS],settings:{...DEFAULT_SETTINGS},chatHistory:[]};
-}
-function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
-function genId(){return 'id_'+Date.now()+'_'+Math.random().toString(36).substr(2,5)}
+let leads = JSON.parse(localStorage.getItem('az_leads')) || [...DEFAULT_LEADS];
+let appointments = JSON.parse(localStorage.getItem('az_appts')) || [...DEFAULT_APPTS];
+let chatHistory = JSON.parse(localStorage.getItem('az_chat')) || [
+{role:'ai',text:'Welcome to the Astylez Auto AI Assistant. I can help you manage leads, schedule appointments, and provide business insights. What would you like to do?'}
+];
+let currentTab = 'home';
 
-// ========== UTILITY ==========
-function toast(msg){
-const c=document.getElementById('toastContainer');
-const t=document.createElement('div');t.className='toast';t.textContent=msg;
-c.appendChild(t);setTimeout(()=>t.remove(),3000);
-}
-function formatCurrency(n){return '$'+Number(n).toLocaleString()}
-function timeAgo(ts){
-const diff=Date.now()-ts;const mins=Math.floor(diff/60000);
-if(mins<60)return mins+'m ago';const hrs=Math.floor(mins/60);
-if(hrs<24)return hrs+'h ago';return Math.floor(hrs/24)+'d ago';
-}
-function formatDate(dateStr){
-const d=new Date(dateStr+'T00:00:00');
-return{day:d.getDate(),month:d.toLocaleDateString('en',{month:'short'}),weekday:d.toLocaleDateString('en',{weekday:'short'})};
-}
-function getInitials(name){return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
-
-// ========== NAVIGATION ==========
-document.querySelectorAll('.nav-btn').forEach(btn=>{
-btn.addEventListener('click',()=>{
-document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
-document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-document.getElementById('view-'+btn.dataset.view).classList.add('active');
-renderCurrentView(btn.dataset.view);
-});
-});
-function renderCurrentView(view){
-switch(view){
-case 'home':renderDashboard();break;
-case 'leads':renderLeads();break;
-case 'schedule':renderSchedule();break;
-case 'voice':renderVoice();break;
-case 'messages':renderMessages();break;
-case 'content':renderContent();break;
-case 'ai':renderAI();break;
-case 'setup':renderSetup();break;
-}
+function saveData(){
+localStorage.setItem('az_leads',JSON.stringify(leads));
+localStorage.setItem('az_appts',JSON.stringify(appointments));
+localStorage.setItem('az_chat',JSON.stringify(chatHistory));
 }
 
-// ========== MODALS ==========
-function openModal(id){document.getElementById(id).classList.add('active')}
-function closeModal(id){document.getElementById(id).classList.remove('active')}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'))}});
-document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('active')})});
-
-// ========== CLOCK ==========
+// ===== CLOCK =====
 function updateClock(){
 const now=new Date();
-document.getElementById('clock').textContent=now.toLocaleTimeString('en-US',{hour12:true,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+document.getElementById('clock').textContent=now.toLocaleTimeString('en-US',{hour12:false});
+document.getElementById('clockDate').textContent=now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
 }
 setInterval(updateClock,1000);updateClock();
 
-// ========== STARS ==========
-(function createStars(){
-const container=document.getElementById('stars');
-for(let i=0;i<50;i++){
-const star=document.createElement('div');star.className='star';
-star.style.left=Math.random()*100+'%';star.style.top=Math.random()*100+'%';
-star.style.animationDelay=Math.random()*3+'s';star.style.opacity=Math.random()*0.4+0.1;
-container.appendChild(star);
+// ===== NAV =====
+const TABS=[
+{id:'home',label:'Home',icon:'<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>'},
+{id:'leads',label:'Leads',icon:'<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>'},
+{id:'schedule',label:'Schedule',icon:'<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
+{id:'voice',label:'Voice',icon:'<path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>'},
+{id:'messages',label:'Messages',icon:'<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'},
+{id:'content',label:'Content',icon:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>'},
+{id:'ai',label:'AI',icon:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>'},
+{id:'setup',label:'Setup',icon:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>'}
+];
+
+function renderNav(){
+const nav=document.getElementById('bottomNav');
+nav.innerHTML=TABS.map(t=>`<button class="nav-btn ${currentTab===t.id?'active':''}" onclick="switchTab('${t.id}')"><svg viewBox="0 0 24 24">${t.icon}</svg><span>${t.label}</span></button>`).join('');
 }
-})();
 
-// ========== DASHBOARD ==========
-function renderDashboard(){
-const leads=state.leads;const appts=state.appointments;
-const totalLeads=leads.length;
-const weekAgo=Date.now()-7*86400000;
-const newThisWeek=leads.filter(l=>l.created>weekAgo).length;
-const upcomingAppts=appts.filter(a=>new Date(a.date+'T'+a.time)>=new Date()).length;
-const pipelineValue=leads.filter(l=>l.status!=='Lost').reduce((s,l)=>s+Number(l.value||0),0);
+function switchTab(tab){currentTab=tab;renderNav();renderContent();}
 
-// Bar chart data - leads per day for last 7 days
-const dayLabels=[];const dayCounts=[];
-for(let i=6;i>=0;i--){
-const d=new Date();d.setDate(d.getDate()-i);
-const ds=d.toISOString().split('T')[0];
-dayLabels.push(d.toLocaleDateString('en',{weekday:'short'}));
-dayCounts.push(leads.filter(l=>{const ld=new Date(l.created).toISOString().split('T')[0];return ld===ds}).length);
+// ===== MODAL =====
+function openModal(html){document.getElementById('modalContent').innerHTML=html;document.getElementById('modalOverlay').classList.add('show');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
+
+// ===== COUNTER ANIMATION =====
+function animateCounters(){
+document.querySelectorAll('[data-count]').forEach(el=>{
+const target=parseInt(el.dataset.count);const prefix=el.dataset.prefix||'';const suffix=el.dataset.suffix||'';
+let current=0;const step=Math.ceil(target/60);const interval=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(interval)}el.textContent=prefix+current.toLocaleString()+suffix;},25);
+});}
+
+// ===== RENDER CONTENT =====
+function renderContent(){
+const main=document.getElementById('mainContent');
+switch(currentTab){
+case 'home': main.innerHTML=renderHome();break;
+case 'leads': main.innerHTML=renderLeads();break;
+case 'schedule': main.innerHTML=renderSchedule();break;
+case 'voice': main.innerHTML=renderVoice();break;
+case 'messages': main.innerHTML=renderMessages();break;
+case 'content': main.innerHTML=renderContentStudio();break;
+case 'ai': main.innerHTML=renderAI();break;
+case 'setup': main.innerHTML=renderSetup();break;
 }
-const maxCount=Math.max(...dayCounts,1);
+setTimeout(()=>{animateCounters();animateBars();animateRings();},100);
+}
 
-// Upcoming appointments
-const upcoming=appts.filter(a=>new Date(a.date+'T'+a.time)>=new Date()).sort((a,b)=>new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time)).slice(0,3);
+function animateBars(){document.querySelectorAll('.bar[data-h]').forEach((b,i)=>{setTimeout(()=>{b.style.height=b.dataset.h+'px';},i*100);})}
+function animateRings(){document.querySelectorAll('.ring-fill[data-offset]').forEach(r=>{setTimeout(()=>{r.style.strokeDashoffset=r.dataset.offset;},300);})}
 
-// Recent leads
-const recent=leads.slice().sort((a,b)=>b.created-a.created).slice(0,5);
+// ===== HOME TAB =====
+function renderHome(){
+const totalLeads=leads.length;const newThisWeek=leads.filter(l=>l.status==='new').length;
+const revenue=leads.filter(l=>l.status==='won').reduce((s,l)=>s+l.value,0);
+const convRate=totalLeads?Math.round((leads.filter(l=>l.status==='won').length/totalLeads)*100):0;
+const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const barData=[5,8,3,7,6,4,9];
+const maxBar=Math.max(...barData);
 
-document.getElementById('view-home').innerHTML=`
+// Service breakdown
+const services={Tint:0,PPF:0,Wrap:0,Correction:0,Rims:0};
+leads.forEach(l=>{
+if(l.service.toLowerCase().includes('tint'))services.Tint++;
+else if(l.service.toLowerCase().includes('ppf'))services.PPF++;
+else if(l.service.toLowerCase().includes('wrap'))services.Wrap++;
+else if(l.service.toLowerCase().includes('correction'))services.Correction++;
+else if(l.service.toLowerCase().includes('rim'))services.Rims++;
+});
+const svcTotal=Object.values(services).reduce((a,b)=>a+b,1);
+const svcColors=['var(--cyan)','var(--magenta)','var(--green)','var(--amber)','#b366ff'];
+
+// Flow data
+const flowStages=[
+{label:'NEW',count:leads.filter(l=>l.status==='new').length},
+{label:'CONTACTED',count:leads.filter(l=>l.status==='contacted').length},
+{label:'QUOTED',count:leads.filter(l=>l.status==='quoted').length},
+{label:'BOOKED',count:leads.filter(l=>l.status==='booked').length},
+{label:'WON',count:leads.filter(l=>l.status==='won').length}
+];
+
+// Line chart data (14 days revenue trend)
+const lineData=[1200,1800,900,2400,1600,3200,2800,1900,4200,3600,2100,4800,3900,5200];
+const lineMax=Math.max(...lineData);
+const linePoints=lineData.map((v,i)=>`${i*(280/13)},${140-((v/lineMax)*120)}`).join(' ');
+
+return `
 <div class="kpi-grid">
-<div class="glass-card kpi-card"><div class="kpi-label">Total Leads</div><div class="kpi-value">${totalLeads}</div><div class="kpi-sub">All time</div></div>
-<div class="glass-card kpi-card"><div class="kpi-label">New This Week</div><div class="kpi-value">${newThisWeek}</div><div class="kpi-sub">Last 7 days</div></div>
-<div class="glass-card kpi-card"><div class="kpi-label">Upcoming Appts</div><div class="kpi-value">${upcomingAppts}</div><div class="kpi-sub">Scheduled</div></div>
-<div class="glass-card kpi-card"><div class="kpi-label">Pipeline Value</div><div class="kpi-value">${formatCurrency(pipelineValue)}</div><div class="kpi-sub">Active pipeline</div></div>
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">Total Leads</div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div class="kpi-value" data-count="${totalLeads}">${totalLeads}</div>
+      <div class="ring-progress"><svg width="44" height="44"><circle class="ring-bg" cx="22" cy="22" r="18"/><circle class="ring-fill" cx="22" cy="22" r="18" stroke-dasharray="113" stroke-dashoffset="113" data-offset="${113-(totalLeads/1000)*113}"/></svg></div>
+    </div>
+    <div class="kpi-label">LIFETIME TOTAL</div>
+  </div>
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">New This Week</div>
+    <div class="kpi-value" data-count="${newThisWeek}">${newThisWeek}</div>
+    <div class="kpi-label">FRESH LEADS</div>
+    <div class="kpi-change up">&#9650; 12%</div>
+  </div>
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">Revenue (Won)</div>
+    <div class="kpi-value" data-count="${revenue}" data-prefix="$">${revenue}</div>
+    <div class="kpi-label">CLOSED DEALS</div>
+    <div class="kpi-change up">&#9650; 24%</div>
+  </div>
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">Conversion Rate</div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="kpi-value" data-count="${convRate}" data-suffix="%">${convRate}%</div>
+      <svg width="60" height="60" viewBox="0 0 60 60">
+        <circle cx="30" cy="30" r="24" fill="none" stroke="rgba(0,240,255,0.1)" stroke-width="6"/>
+        <circle class="ring-fill" cx="30" cy="30" r="24" fill="none" stroke="var(--green)" stroke-width="6" stroke-linecap="round"
+          stroke-dasharray="${2*Math.PI*24}" stroke-dashoffset="${2*Math.PI*24}" data-offset="${2*Math.PI*24*(1-convRate/100)}" style="transform:rotate(-90deg);transform-origin:center"/>
+      </svg>
+    </div>
+    <div class="kpi-label">LEAD TO CLOSE</div>
+  </div>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
-<div class="glass-card">
-<h3 class="section-title" style="font-size:14px;margin-bottom:12px">Lead Volume (7 Days)</h3>
-<div class="bar-chart">${dayCounts.map((c,i)=>`<div class="bar-col"><div class="bar" style="height:${(c/maxCount)*100}%"></div><div class="bar-label">${dayLabels[i]}</div></div>`).join('')}</div>
+
+<div class="chart-grid">
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">Weekly Lead Activity</div>
+    <div class="bar-chart">${barData.map((v,i)=>`<div class="bar-col"><div class="bar" data-h="${(v/maxBar)*130}" style="height:0"></div><div class="bar-label">${days[i]}</div></div>`).join('')}</div>
+  </div>
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">Service Breakdown</div>
+    <svg viewBox="0 0 200 200" width="200" height="200" style="display:block;margin:0 auto">
+      ${Object.entries(services).map(([name,count],i)=>{
+        const pct=count/svcTotal;const circ=2*Math.PI*70;const offset=circ*(1-pct);
+        const rotation=Object.entries(services).slice(0,i).reduce((a,[,c])=>a+(c/svcTotal)*360,0);
+        return `<circle cx="100" cy="100" r="70" fill="none" stroke="${svcColors[i]}" stroke-width="14" stroke-dasharray="${circ}" stroke-dashoffset="${offset}" style="transform:rotate(${rotation-90}deg);transform-origin:center;opacity:0.8" stroke-linecap="round"/>`;
+      }).join('')}
+      <text x="100" y="95" text-anchor="middle" fill="var(--text-bright)" font-family="JetBrains Mono" font-size="20" font-weight="700">${svcTotal}</text>
+      <text x="100" y="115" text-anchor="middle" fill="var(--text-muted)" font-family="Orbitron" font-size="8" letter-spacing="1">SERVICES</text>
+    </svg>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;justify-content:center">${Object.entries(services).map(([name],i)=>`<span style="font-size:10px;color:${svcColors[i]}">&#9679; ${name}</span>`).join('')}</div>
+  </div>
 </div>
-<div class="glass-card">
-<h3 class="section-title" style="font-size:14px;margin-bottom:12px">Upcoming</h3>
-${upcoming.length?upcoming.map(a=>{const fd=formatDate(a.date);return`<div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><div style="text-align:center;min-width:44px"><div style="font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--accent)">${fd.day}</div><div style="font-size:10px;color:var(--text-dim)">${fd.month}</div></div><div><div style="font-size:13px;font-weight:500">${a.leadName}</div><div style="font-size:11px;color:var(--text-dim)">${a.service} · ${a.time}</div></div></div>`}).join(''):'<p style="color:var(--text-muted);font-size:13px">No upcoming appointments</p>'}
+
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Lead Pipeline Flow</div>
+  <div class="flow-container">
+    ${flowStages.map((s,i)=>`<div class="flow-node"><div class="flow-node-label">${s.label}</div><div class="flow-node-value">${s.count}</div></div>${i<flowStages.length-1?'<div class="flow-arrow"></div>':''}`).join('')}
+  </div>
 </div>
-</div>
-<div class="glass-card">
-<h3 class="section-title" style="font-size:14px;margin-bottom:12px">Recent Leads</h3>
-${recent.map(l=>`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><div class="avatar">${getInitials(l.name)}</div><div style="flex:1"><div style="font-size:13px;font-weight:500">${l.name}</div><div style="font-size:11px;color:var(--text-dim)">${l.source} · ${timeAgo(l.created)}</div></div><div style="text-align:right"><div style="font-family:var(--font-mono);font-size:13px;color:var(--accent)">${formatCurrency(l.value)}</div><span class="chip chip-${l.status.toLowerCase()}"><span class="chip-dot"></span>${l.status}</span></div></div>`).join('')}
+
+<div class="chart-grid">
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">Revenue Trend (14 Days)</div>
+    <svg viewBox="0 0 300 160" class="svg-chart" style="height:160px">
+      <defs><linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(0,240,255,0.3)"/><stop offset="100%" stop-color="rgba(0,240,255,0)"/></linearGradient></defs>
+      <polygon class="line-area" points="0,140 ${linePoints} ${280},140" fill="url(#lineGrad)"/>
+      <polyline class="line-path" points="${linePoints}"/>
+    </svg>
+  </div>
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">Recent Activity</div>
+    <div class="feed-item"><div class="feed-dot" style="background:var(--green)"></div><div><div class="feed-text">Devon Marshall - Full PPF + Tint closed for $5,800</div><div class="feed-time">2 hours ago</div></div></div>
+    <div class="feed-item"><div class="feed-dot" style="background:var(--cyan)"></div><div><div class="feed-text">New lead: Aisha Johnson - Color Change Wrap</div><div class="feed-time">4 hours ago</div></div></div>
+    <div class="feed-item"><div class="feed-dot" style="background:var(--amber)"></div><div><div class="feed-text">Follow-up reminder: Carlos Mendez</div><div class="feed-time">6 hours ago</div></div></div>
+    <div class="feed-item"><div class="feed-dot" style="background:var(--magenta)"></div><div><div class="feed-text">Appointment scheduled: Dana Chen - Tomorrow 2PM</div><div class="feed-time">8 hours ago</div></div></div>
+  </div>
 </div>`;
 }
-</script>
 
-
-
-<script>
-// ========== LEADS VIEW ==========
+// ===== LEADS TAB =====
 function renderLeads(){
-const leads=state.leads;
-document.getElementById('view-leads').innerHTML=`
-<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap">
-<h2 class="section-title" style="margin:0">Leads CRM</h2>
-<div style="flex:1"></div>
-<input id="leadSearch" placeholder="Search leads..." style="max-width:200px" oninput="filterLeads()">
-<select id="leadFilter" style="max-width:140px" onchange="filterLeads()"><option value="">All Status</option><option>New</option><option>Contacted</option><option>Won</option><option>Lost</option></select>
-<button class="btn btn-primary" onclick="openNewLead()">+ New Lead</button>
-<button class="btn" onclick="importCSV()">CSV Import</button>
-</div>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name / Contact</th><th>Service</th><th>Vehicle</th><th>Value</th><th>Status</th><th>Actions</th></tr></thead>
-<tbody id="leadsTableBody">
-${leads.map(l=>`<tr data-id="${l.id}" data-status="${l.status.toLowerCase()}" data-name="${l.name.toLowerCase()} ${l.contact.toLowerCase()}">
-<td><div style="font-weight:500">${l.name}</div><div style="font-size:11px;color:var(--text-dim)">${l.contact}</div></td>
-<td>${l.service}</td>
-<td style="font-size:12px;color:var(--text-dim)">${l.year||''} ${l.make||''} ${l.model||''}</td>
-<td style="font-family:var(--font-mono)">${formatCurrency(l.value)}</td>
-<td><span class="chip chip-${l.status.toLowerCase()}" onclick="cycleStatus('${l.id}')"><span class="chip-dot"></span>${l.status}</span></td>
-<td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="editLead('${l.id}')">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteLead('${l.id}')">Del</button></div></td>
-</tr>`).join('')}
-</tbody>
-</table>
-</div>
-<input type="file" id="csvInput" accept=".csv" style="display:none" onchange="handleCSV(event)">`;
+return `
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div class="card-title" style="margin:0">Lead Management</div>
+    <button class="btn btn-cyan btn-sm" onclick="openLeadModal()">+ NEW LEAD</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" placeholder="Search leads..." id="leadSearch" oninput="filterLeads()">
+    <select id="leadFilter" onchange="filterLeads()"><option value="">All Status</option><option value="new">New</option><option value="contacted">Contacted</option><option value="quoted">Quoted</option><option value="booked">Booked</option><option value="won">Won</option><option value="lost">Lost</option></select>
+  </div>
+  <div style="overflow-x:auto">
+  <table class="hud-table">
+    <thead><tr><th>NAME</th><th>CONTACT</th><th>SERVICE</th><th>VALUE</th><th>VEHICLE</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+    <tbody id="leadsTableBody">
+      ${leads.map(l=>`<tr>
+        <td style="color:var(--text-bright);font-weight:500">${l.name}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${l.contact}</td>
+        <td>${l.service}</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:var(--green)">$${l.value.toLocaleString()}</td>
+        <td style="font-size:11px">${l.vehicle}</td>
+        <td><span class="status-chip status-${l.status}">${l.status.toUpperCase()}</span></td>
+        <td><button class="btn btn-cyan btn-sm" onclick="openLeadModal(${l.id})" style="margin-right:4px">Edit</button><button class="btn btn-magenta btn-sm" onclick="deleteLead(${l.id})">Del</button></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+  </div>
+</div>`;
 }
 
 function filterLeads(){
-const search=(document.getElementById('leadSearch')?.value||'').toLowerCase();
-const filter=(document.getElementById('leadFilter')?.value||'').toLowerCase();
-document.querySelectorAll('#leadsTableBody tr').forEach(row=>{
-const matchName=row.dataset.name.includes(search);
-const matchStatus=!filter||row.dataset.status===filter;
-row.style.display=(matchName&&matchStatus)?'':'none';
+const q=document.getElementById('leadSearch').value.toLowerCase();
+const f=document.getElementById('leadFilter').value;
+const rows=document.getElementById('leadsTableBody').querySelectorAll('tr');
+leads.forEach((l,i)=>{
+const matchQ=l.name.toLowerCase().includes(q)||l.service.toLowerCase().includes(q)||l.vehicle.toLowerCase().includes(q);
+const matchF=!f||l.status===f;
+if(rows[i])rows[i].style.display=(matchQ&&matchF)?'':'none';
 });
 }
 
-function openNewLead(){
-document.getElementById('leadId').value='';
-document.getElementById('leadName').value='';
-document.getElementById('leadContact').value='';
-document.getElementById('leadService').value='Window Tint';
-document.getElementById('leadValue').value='';
-document.getElementById('leadStatus').value='New';
-document.getElementById('leadSource').value='Walk-in';
-document.getElementById('leadYear').value='';
-document.getElementById('leadMake').value='';
-document.getElementById('leadModel').value='';
-document.getElementById('leadNotes').value='';
-openModal('leadModal');
-}
-
-function editLead(id){
-const l=state.leads.find(x=>x.id===id);if(!l)return;
-document.getElementById('leadId').value=l.id;
-document.getElementById('leadName').value=l.name;
-document.getElementById('leadContact').value=l.contact;
-document.getElementById('leadService').value=l.service;
-document.getElementById('leadValue').value=l.value;
-document.getElementById('leadStatus').value=l.status;
-document.getElementById('leadSource').value=l.source||'Walk-in';
-document.getElementById('leadYear').value=l.year||'';
-document.getElementById('leadMake').value=l.make||'';
-document.getElementById('leadModel').value=l.model||'';
-document.getElementById('leadNotes').value=l.notes||'';
-openModal('leadModal');
-}
-
-function saveLead(){
-const id=document.getElementById('leadId').value;
-const data={
-name:document.getElementById('leadName').value,
-contact:document.getElementById('leadContact').value,
-service:document.getElementById('leadService').value,
-value:Number(document.getElementById('leadValue').value)||0,
-status:document.getElementById('leadStatus').value,
-source:document.getElementById('leadSource').value,
-year:document.getElementById('leadYear').value,
-make:document.getElementById('leadMake').value,
-model:document.getElementById('leadModel').value,
-notes:document.getElementById('leadNotes').value
-};
-if(!data.name){toast('Name is required');return}
-if(id){
-const idx=state.leads.findIndex(l=>l.id===id);
-if(idx>=0)state.leads[idx]={...state.leads[idx],...data};
-toast('Lead updated');
-}else{
-state.leads.push({id:genId(),created:Date.now(),...data});
-toast('Lead created');
-}
-saveData();closeModal('leadModal');renderLeads();
-}
-
-function deleteLead(id){
-if(!confirm('Delete this lead?'))return;
-state.leads=state.leads.filter(l=>l.id!==id);
-saveData();renderLeads();toast('Lead deleted');
-}
-
-function cycleStatus(id){
-const statuses=['New','Contacted','Won','Lost'];
-const l=state.leads.find(x=>x.id===id);if(!l)return;
-const idx=statuses.indexOf(l.status);
-l.status=statuses[(idx+1)%statuses.length];
-saveData();renderLeads();
-}
-
-function importCSV(){document.getElementById('csvInput').click()}
-function handleCSV(e){
-const file=e.target.files[0];if(!file)return;
-const reader=new FileReader();
-reader.onload=function(ev){
-const lines=ev.target.result.split('\n').filter(l=>l.trim());
-const headers=lines[0].split(',').map(h=>h.trim().toLowerCase());
-for(let i=1;i<lines.length;i++){
-const vals=lines[i].split(',').map(v=>v.trim());
-const row={};headers.forEach((h,j)=>row[h]=vals[j]||'');
-state.leads.push({id:genId(),name:row.name||'Unknown',contact:row.phone||row.email||'',service:row.service||'Other',value:Number(row.value)||0,status:'New',source:row.source||'CSV Import',year:row.year||'',make:row.make||'',model:row.model||'',notes:row.notes||'',created:Date.now()});
-}
-saveData();renderLeads();toast(`Imported ${lines.length-1} leads`);
-};
-reader.readAsText(file);e.target.value='';
-}
-</script>
-
-
-<script>
-// ========== SCHEDULE VIEW ==========
-function renderSchedule(){
-const appts=state.appointments.slice().sort((a,b)=>new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time));
-document.getElementById('view-schedule').innerHTML=`
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-<h2 class="section-title" style="margin:0">Schedule</h2>
-<button class="btn btn-primary" onclick="openNewAppt()">+ New Appointment</button>
-</div>
-<div class="glass-card" style="margin-bottom:16px;padding:12px 16px;border-left:3px solid var(--accent)">
-<p style="font-size:12px;color:var(--text-dim)">Confirmations are queued for the Voice Agent. Toggle auto-confirm in Voice settings.</p>
-</div>
-${appts.map(a=>{
-const fd=formatDate(a.date);
-const statusClass=a.status==='Confirmed'?'chip-confirmed':'chip-scheduled';
-return `<div class="glass-card" style="margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-<div style="text-align:center;min-width:56px;padding:8px;border-radius:8px;background:rgba(var(--accent-rgb),0.1)">
-<div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent)">${fd.day}</div>
-<div style="font-size:10px;color:var(--text-dim)">${fd.month}</div>
-<div style="font-size:10px;color:var(--text-muted)">${a.time}</div>
-</div>
-<div style="flex:1">
-<div style="font-weight:500;font-size:14px">${a.leadName}</div>
-<div style="font-size:12px;color:var(--text-dim);margin-top:2px">${a.service}</div>
-<div style="font-size:11px;color:var(--text-muted);margin-top:2px">Confirm: ${a.confirmVia}</div>
-</div>
-<span class="chip ${statusClass}"><span class="chip-dot"></span>${a.status}</span>
-<div style="display:flex;gap:4px">
-<button class="btn btn-sm" onclick="editAppt('${a.id}')">Edit</button>
-<button class="btn btn-sm btn-danger" onclick="deleteAppt('${a.id}')">Del</button>
-</div>
-</div>`;
-}).join('')}
-${appts.length===0?'<div class="glass-card"><p style="color:var(--text-muted);text-align:center">No appointments scheduled</p></div>':''}`;
-}
-
-function openNewAppt(){
-document.getElementById('apptId').value='';
-const sel=document.getElementById('apptLead');
-sel.innerHTML=state.leads.map(l=>`<option value="${l.id}">${l.name}</option>`).join('');
-document.getElementById('apptDate').value=getTomorrow();
-document.getElementById('apptTime').value='10:00';
-document.getElementById('apptService').value='Window Tint';
-document.getElementById('apptConfirm').value='Text';
-openModal('apptModal');
-}
-
-function editAppt(id){
-const a=state.appointments.find(x=>x.id===id);if(!a)return;
-document.getElementById('apptId').value=a.id;
-const sel=document.getElementById('apptLead');
-sel.innerHTML=state.leads.map(l=>`<option value="${l.id}">${l.name}</option>`).join('');
-sel.value=a.leadId;
-document.getElementById('apptDate').value=a.date;
-document.getElementById('apptTime').value=a.time;
-document.getElementById('apptService').value=a.service;
-document.getElementById('apptConfirm').value=a.confirmVia;
-openModal('apptModal');
-}
-
-function saveAppt(){
-const id=document.getElementById('apptId').value;
-const leadId=document.getElementById('apptLead').value;
-const lead=state.leads.find(l=>l.id===leadId);
-const data={
-leadId:leadId,
-leadName:lead?lead.name:'Unknown',
-date:document.getElementById('apptDate').value,
-time:document.getElementById('apptTime').value,
-service:document.getElementById('apptService').value,
-confirmVia:document.getElementById('apptConfirm').value,
-status:'Scheduled'
-};
-if(!data.date){toast('Date is required');return}
-if(id){
-const idx=state.appointments.findIndex(a=>a.id===id);
-if(idx>=0)state.appointments[idx]={...state.appointments[idx],...data};
-toast('Appointment updated');
-}else{
-state.appointments.push({id:genId(),...data});
-toast('Appointment created');
-}
-saveData();closeModal('apptModal');renderSchedule();
-}
-
-function deleteAppt(id){
-if(!confirm('Delete this appointment?'))return;
-state.appointments=state.appointments.filter(a=>a.id!==id);
-saveData();renderSchedule();toast('Appointment deleted');
-}
-</script>
-
-
-<script>
-// ========== VOICE AGENT VIEW ==========
-function renderVoice(){
-const needsCall=state.leads.filter(l=>l.status==='New'||l.status==='Contacted').slice(0,4);
-const scheduled=state.appointments.filter(a=>a.status==='Scheduled');
-const callQueue=[...needsCall.map(l=>({name:l.name,reason:l.status==='New'?'Orphan lead follow-up':'Confirmation needed',contact:l.contact})),...scheduled.map(a=>({name:a.leadName,reason:'Appointment confirmation',contact:''}))].slice(0,5);
-
-document.getElementById('view-voice').innerHTML=`
-<h2 class="section-title">Voice Agent</h2>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-<div class="glass-card">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Agent Tasks</h3>
-<div style="display:flex;flex-direction:column;gap:12px">
-${[['Answer inbound calls',true],['Book appointments',true],['Confirmation calls & texts',true],['Missed-call follow-up',true],['Orphan-lead follow-up',false],['Estimate callbacks',false]].map(([label,on])=>`
-<div style="display:flex;justify-content:space-between;align-items:center">
-<span style="font-size:13px">${label}</span>
-<div class="toggle ${on?'active':''}" onclick="this.classList.toggle('active')"></div>
-</div>`).join('')}
-</div>
-</div>
-<div class="glass-card">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Call Volume</h3>
-<svg viewBox="0 0 200 60" style="width:100%;height:60px;margin-bottom:12px">
-<polyline points="0,50 20,45 40,30 60,35 80,20 100,25 120,15 140,28 160,10 180,18 200,12" fill="none" stroke="url(#sparkGrad)" stroke-width="2"/>
-<defs><linearGradient id="sparkGrad"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--purple)"/></linearGradient></defs>
-</svg>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-<div style="text-align:center;padding:12px;border-radius:8px;background:rgba(var(--accent-rgb),0.05)">
-<div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent)">47</div>
-<div style="font-size:10px;color:var(--text-dim);text-transform:uppercase">Answered</div>
-</div>
-<div style="text-align:center;padding:12px;border-radius:8px;background:rgba(var(--secondary-rgb),0.05)">
-<div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--secondary)">23</div>
-<div style="font-size:10px;color:var(--text-dim);text-transform:uppercase">Booked</div>
-</div>
-</div>
-</div>
-</div>
-<div class="glass-card" style="margin-bottom:16px">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Needs a Call Now</h3>
-${callQueue.length?callQueue.map(c=>`
-<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
-<div class="avatar" style="width:28px;height:28px;font-size:10px">${getInitials(c.name)}</div>
-<div style="flex:1"><div style="font-size:13px">${c.name}</div><div style="font-size:11px;color:var(--text-dim)">${c.reason}</div></div>
-<button class="btn btn-sm btn-primary" onclick="toast('Call queued for '+${JSON.stringify(c.name)})">Queue Call</button>
-</div>`).join(''):'<p style="color:var(--text-muted);font-size:13px">No pending calls</p>'}
-</div>
-<div class="glass-card" style="margin-bottom:16px">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Agent Config</h3>
-<div class="form-row"><label>Greeting</label><input value="Thanks for calling Astylez Auto! How can I help you today?"></div>
-<div class="form-row"><label>Business Hours</label><input value="Mon-Sat 8:00 AM - 6:00 PM"></div>
-</div>
-<div class="glass-card" style="border-left:3px solid var(--warning);padding:12px 16px">
-<p style="font-size:12px;color:var(--text-dim)">Voice is in standby. Connect Twilio ConversationRelay to go live.</p>
-</div>`;
-}
-</script>
-
-
-<script>
-// ========== MESSAGES VIEW ==========
-const MESSAGE_TEMPLATES = {
-'Follow-up': `Hi {name},\n\nThanks for reaching out to Astylez Auto! I wanted to follow up on your inquiry about {service}. We'd love to get you scheduled for a consultation.\n\nLet me know what works best for your schedule!\n\nBest,\nAstylez Auto Team`,
-'Appointment Reminder': `Hi {name},\n\nJust a friendly reminder about your upcoming appointment at Astylez Auto:\n\nService: {service}\nPlease arrive 10 minutes early.\n\nSee you soon!\n- Astylez Auto`,
-'Quote Ready': `Hi {name},\n\nGreat news! Your quote for {service} is ready.\n\nWe've put together a competitive package that includes premium materials and our satisfaction guarantee.\n\nReply to this message or call us to discuss details.\n\n- Astylez Auto`,
-'Thank You': `Hi {name},\n\nThank you for choosing Astylez Auto for your {service}! We hope you love the results.\n\nIf you have any questions about aftercare, don't hesitate to reach out.\n\nEnjoy the new look!\n- The Astylez Auto Team`,
-'Review Request': `Hi {name},\n\nWe hope you're enjoying your {service} from Astylez Auto!\n\nWould you mind leaving us a quick review? It really helps other car enthusiasts find us.\n\nGoogle: [link]\n\nThank you!\n- Astylez Auto`
-};
-
-const MOCK_MESSAGES = [
-{to:'Marcus Rodriguez',template:'Follow-up',channel:'Text',time:Date.now()-3600000},
-{to:'Dana Chen',template:'Quote Ready',channel:'Email',time:Date.now()-7200000},
-{to:'Priya Patel',template:'Thank You',channel:'Both',time:Date.now()-86400000},
-{to:'Carlos Mendez',template:'Appointment Reminder',channel:'Text',time:Date.now()-172800000}
-];
-
-function renderMessages(){
-const templates=Object.keys(MESSAGE_TEMPLATES);
-document.getElementById('view-messages').innerHTML=`
-<h2 class="section-title">Messages</h2>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-<div class="glass-card">
-<div class="form-row"><label>Template</label>
-<select id="msgTemplate" onchange="updateMsgPreview()">
-${templates.map(t=>`<option>${t}</option>`).join('')}
+function openLeadModal(id){
+const lead=id?leads.find(l=>l.id===id):null;
+openModal(`
+<h3>${lead?'EDIT':'NEW'} LEAD</h3>
+<div class="form-group"><label>Name</label><input id="mName" value="${lead?lead.name:''}"></div>
+<div class="form-group"><label>Contact</label><input id="mContact" value="${lead?lead.contact:''}"></div>
+<div class="form-group"><label>Service</label><select id="mService">
+  <option ${lead&&lead.service==='Full PPF'?'selected':''}>Full PPF</option>
+  <option ${lead&&lead.service==='Window Tint'?'selected':''}>Window Tint</option>
+  <option ${lead&&lead.service==='Ceramic Tint'?'selected':''}>Ceramic Tint</option>
+  <option ${lead&&lead.service==='Vinyl Wrap'?'selected':''}>Vinyl Wrap</option>
+  <option ${lead&&lead.service==='Color Change Wrap'?'selected':''}>Color Change Wrap</option>
+  <option ${lead&&lead.service==='Paint Correction'?'selected':''}>Paint Correction</option>
+  <option ${lead&&lead.service==='Rim & Tire Package'?'selected':''}>Rim & Tire Package</option>
+  <option ${lead&&lead.service==='Full PPF + Tint'?'selected':''}>Full PPF + Tint</option>
 </select></div>
-<div class="form-row"><label>Send To</label>
-<select id="msgTo">${state.leads.map(l=>`<option value="${l.id}">${l.name}</option>`).join('')}</select></div>
-<div class="form-row"><label>Channel</label>
-<select id="msgChannel"><option>Text</option><option>Email</option><option>Both</option></select></div>
-<button class="btn btn-primary" onclick="sendMessage()" style="margin-top:8px">Send Message</button>
-</div>
-<div class="glass-card">
-<label style="margin-bottom:8px">Preview</label>
-<div id="msgPreview" style="font-size:12px;color:var(--text-dim);white-space:pre-wrap;line-height:1.6;max-height:200px;overflow-y:auto"></div>
-</div>
-</div>
-<div class="glass-card">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Recent Messages</h3>
-${MOCK_MESSAGES.map(m=>`
-<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
-<div class="avatar" style="width:28px;height:28px;font-size:10px">${getInitials(m.to)}</div>
-<div style="flex:1"><div style="font-size:13px">${m.to}</div><div style="font-size:11px;color:var(--text-dim)">${m.template} · ${m.channel}</div></div>
-<div style="font-size:11px;color:var(--text-muted)">${timeAgo(m.time)}</div>
-</div>`).join('')}
+<div class="form-group"><label>Value ($)</label><input type="number" id="mValue" value="${lead?lead.value:''}"></div>
+<div class="form-group"><label>Vehicle</label><input id="mVehicle" value="${lead?lead.vehicle:''}"></div>
+<div class="form-group"><label>Status</label><select id="mStatus">
+  <option value="new" ${lead&&lead.status==='new'?'selected':''}>New</option>
+  <option value="contacted" ${lead&&lead.status==='contacted'?'selected':''}>Contacted</option>
+  <option value="quoted" ${lead&&lead.status==='quoted'?'selected':''}>Quoted</option>
+  <option value="booked" ${lead&&lead.status==='booked'?'selected':''}>Booked</option>
+  <option value="won" ${lead&&lead.status==='won'?'selected':''}>Won</option>
+  <option value="lost" ${lead&&lead.status==='lost'?'selected':''}>Lost</option>
+</select></div>
+<div style="display:flex;gap:10px;margin-top:20px">
+  <button class="btn btn-cyan" onclick="saveLead(${id||0})">SAVE</button>
+  <button class="btn btn-magenta" onclick="closeModal()">CANCEL</button>
+</div>`);
+}
+
+function saveLead(id){
+const data={
+name:document.getElementById('mName').value,
+contact:document.getElementById('mContact').value,
+service:document.getElementById('mService').value,
+value:parseInt(document.getElementById('mValue').value)||0,
+vehicle:document.getElementById('mVehicle').value,
+status:document.getElementById('mStatus').value,
+date:new Date().toISOString().split('T')[0]
+};
+if(!data.name){alert('Name required');return;}
+if(id){const idx=leads.findIndex(l=>l.id===id);if(idx>-1){leads[idx]={...leads[idx],...data};}}
+else{data.id=Date.now();leads.unshift(data);}
+saveData();closeModal();renderContent();
+}
+
+function deleteLead(id){if(confirm('Delete this lead?')){leads=leads.filter(l=>l.id!==id);saveData();renderContent();}}
+
+// ===== SCHEDULE TAB =====
+function renderSchedule(){
+const today=new Date().toISOString().split('T')[0];
+const sortedAppts=[...appointments].sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+const grouped={};
+sortedAppts.forEach(a=>{if(!grouped[a.date])grouped[a.date]=[];grouped[a.date].push(a);});
+
+return `
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div class="card-title" style="margin:0">Appointments</div>
+    <button class="btn btn-cyan btn-sm" onclick="openApptModal()">+ NEW APPOINTMENT</button>
+  </div>
+  ${Object.entries(grouped).map(([date,appts])=>{
+    const d=new Date(date+'T12:00:00');const isToday=date===today;
+    const dateLabel=isToday?'TODAY':d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+    return `<div style="margin-bottom:20px">
+      <div style="font-family:'Orbitron',monospace;font-size:11px;color:${isToday?'var(--cyan)':'var(--text-muted)'};margin-bottom:10px;letter-spacing:2px;${isToday?'text-shadow:0 0 10px rgba(0,240,255,0.5)':''}">${dateLabel}</div>
+      ${appts.map(a=>`<div class="schedule-item">
+        <div class="schedule-time">${a.time}</div>
+        <div class="schedule-info"><h4>${a.client}</h4><p>${a.service} &bull; ${a.vehicle} &bull; ${a.duration}</p></div>
+        <div><button class="btn btn-cyan btn-sm" onclick="openApptModal(${a.id})" style="margin-right:4px">Edit</button><button class="btn btn-magenta btn-sm" onclick="deleteAppt(${a.id})">Del</button></div>
+      </div>`).join('')}
+    </div>`;
+  }).join('')}
+  ${Object.keys(grouped).length===0?'<p style="color:var(--text-muted);text-align:center;padding:40px">No appointments scheduled</p>':''}
 </div>`;
-updateMsgPreview();
 }
 
-function updateMsgPreview(){
-const tmpl=document.getElementById('msgTemplate')?.value;
-const leadId=document.getElementById('msgTo')?.value;
-const lead=state.leads.find(l=>l.id===leadId);
-if(!tmpl||!lead)return;
-let text=MESSAGE_TEMPLATES[tmpl]||'';
-text=text.replace(/\{name\}/g,lead.name.split(' ')[0]);
-text=text.replace(/\{service\}/g,lead.service);
-const preview=document.getElementById('msgPreview');
-if(preview)preview.textContent=text;
+function openApptModal(id){
+const appt=id?appointments.find(a=>a.id===id):null;
+openModal(`
+<h3>${appt?'EDIT':'NEW'} APPOINTMENT</h3>
+<div class="form-group"><label>Client</label><input id="aClient" value="${appt?appt.client:''}" list="clientList">
+<datalist id="clientList">${leads.map(l=>`<option value="${l.name}">`).join('')}</datalist></div>
+<div class="form-group"><label>Date</label><input type="date" id="aDate" value="${appt?appt.date:getRelativeDate(1)}"></div>
+<div class="form-group"><label>Time</label><input type="time" id="aTime" value="${appt?appt.time:'09:00'}"></div>
+<div class="form-group"><label>Service</label><input id="aService" value="${appt?appt.service:''}"></div>
+<div class="form-group"><label>Vehicle</label><input id="aVehicle" value="${appt?appt.vehicle:''}"></div>
+<div class="form-group"><label>Duration</label><input id="aDuration" value="${appt?appt.duration:'2h'}"></div>
+<div style="display:flex;gap:10px;margin-top:20px">
+  <button class="btn btn-cyan" onclick="saveAppt(${id||0})">SAVE</button>
+  <button class="btn btn-magenta" onclick="closeModal()">CANCEL</button>
+</div>`);
 }
 
-function sendMessage(){
-toast('Queued - connects when Twilio/SendGrid backend is live');
+function saveAppt(id){
+const data={client:document.getElementById('aClient').value,date:document.getElementById('aDate').value,
+time:document.getElementById('aTime').value,service:document.getElementById('aService').value,
+vehicle:document.getElementById('aVehicle').value,duration:document.getElementById('aDuration').value};
+if(!data.client){alert('Client required');return;}
+if(id){const idx=appointments.findIndex(a=>a.id===id);if(idx>-1)appointments[idx]={...appointments[idx],...data};}
+else{data.id=Date.now();appointments.push(data);}
+saveData();closeModal();renderContent();
 }
-</script>
+function deleteAppt(id){if(confirm('Delete?')){appointments=appointments.filter(a=>a.id!==id);saveData();renderContent();}}
 
+// ===== VOICE TAB =====
+function renderVoice(){
+const sparkData=[4,7,3,8,5,9,6,4,7,8,3,6,9,5,7];
+const maxS=Math.max(...sparkData);
+return `
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Voice Agent Status</div>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+    <div class="status-dot"></div>
+    <span style="color:var(--green);font-size:13px;font-weight:500">ACTIVE</span>
+    <span style="color:var(--text-muted);font-size:11px;margin-left:auto">Uptime: 99.7%</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+    <div class="voice-metric"><div class="vm-label">Calls Today</div><div class="vm-value" data-count="12">0</div></div>
+    <div class="voice-metric"><div class="vm-label">Avg Duration</div><div class="vm-value">3:42</div></div>
+    <div class="voice-metric"><div class="vm-label">Bookings Made</div><div class="vm-value" style="color:var(--green)" data-count="4">0</div></div>
+    <div class="voice-metric"><div class="vm-label">Missed Calls</div><div class="vm-value" style="color:var(--magenta)" data-count="1">0</div></div>
+  </div>
+  <div class="card-title">Call Volume (Sparkline)</div>
+  <div class="sparkline">${sparkData.map((v,i)=>`<div class="spark-bar" style="height:${(v/maxS)*100}%;animation-delay:${i*0.05}s"></div>`).join('')}</div>
+</div>
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Agent Tasks</div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    ${['Answer incoming calls','Qualify new leads','Schedule appointments','Send follow-up texts','Update CRM status'].map((t,i)=>
+    `<label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px;border:1px solid rgba(0,240,255,0.06)">
+      <input type="checkbox" checked style="accent-color:var(--cyan)"><span style="font-size:13px;color:var(--text-dim)">${t}</span>
+    </label>`).join('')}
+  </div>
+</div>
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Priority Queue</div>
+  <div class="schedule-item"><div class="schedule-time" style="color:var(--magenta)">HIGH</div><div class="schedule-info"><h4>Marcus Rodriguez</h4><p>Callback requested - Full PPF quote</p></div></div>
+  <div class="schedule-item"><div class="schedule-time" style="color:var(--amber)">MED</div><div class="schedule-info"><h4>Carlos Mendez</h4><p>Follow-up on rim package pricing</p></div></div>
+  <div class="schedule-item"><div class="schedule-time" style="color:var(--text-muted)">LOW</div><div class="schedule-info"><h4>Theo Washington</h4><p>General inquiry - vinyl wrap colors</p></div></div>
+</div>`;
+}
 
-<script>
-// ========== CONTENT STUDIO VIEW ==========
-const SAMPLE_POSTS = [
-{platform:'Instagram',hook:'Transform your ride in 24 hours',caption:'Full PPF installation on this 2024 Porsche 911. Crystal clear protection that keeps your paint looking showroom fresh for years. Book your consultation today.',hashtags:'#PPF #PaintProtection #Porsche911 #AutoDetailing #DenverCars'},
-{platform:'Facebook',hook:'Why ceramic tint is worth every penny',caption:'Regular tint vs ceramic tint - the difference is night and day. Our ceramic tint blocks 99% of UV rays and keeps your interior 40% cooler. Perfect for Colorado summers.',hashtags:'#CeramicTint #WindowTint #ColoradoCars #HeatRejection #AstylesAuto'},
-{platform:'TikTok',hook:'Color change wrap reveal',caption:'From factory white to midnight purple. Watch this Ford Mustang get a complete color change wrap. The transformation is insane. What color would you choose?',hashtags:'#VinylWrap #ColorChange #CarWrap #Mustang #Transformation'},
-{platform:'Instagram',hook:'Before & after paint correction',caption:'Swirl marks and scratches GONE. Stage 2 paint correction brought this Mercedes C300 back to life. The depth and clarity in this paint is unreal.',hashtags:'#PaintCorrection #DetailingLife #Mercedes #SwurlFree #MirrorFinish'},
-{platform:'LinkedIn',hook:'Growing our team - now hiring',caption:'Astylez Auto is expanding! We are looking for experienced wrap installers and tint technicians. Competitive pay, great environment, premium clients. DM for details.',hashtags:'#Hiring #AutomotiveJobs #CareerGrowth #DenverJobs #AutoIndustry'},
-{platform:'X',hook:'New rim packages just dropped',caption:'22" matte black forged wheels + performance tires. Complete packages starting at $2,400. Financing available. Hit us up for a quote on your ride.',hashtags:'#CustomRims #Wheels #TirePackage #UpgradeYourRide #Aftermarket'}
+// ===== MESSAGES TAB =====
+function renderMessages(){
+const templates=[
+{name:'New Lead Welcome',channel:'text',preview:'Hey {name}! Thanks for reaching out to Astylez Auto about {service}. We\'d love to get you scheduled for a consultation. What day works best?'},
+{name:'Quote Follow-Up',channel:'both',preview:'Hi {name}, just following up on your {service} quote for your {vehicle}. Ready to lock in that appointment? We have openings this week!'},
+{name:'Appointment Reminder',channel:'text',preview:'Reminder: Your {service} appointment at Astylez Auto is tomorrow at {time}. Please arrive 10 min early. See you then!'},
+{name:'Post-Service Review',channel:'email',preview:'Hey {name}! How\'s the {service} looking on your {vehicle}? We\'d love a quick Google review if you have a moment. Thanks for choosing Astylez Auto!'}
 ];
-
-function renderContent(){
-document.getElementById('view-content').innerHTML=`
-<h2 class="section-title">Content Studio</h2>
-<div class="glass-card" style="margin-bottom:20px">
-<div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
-<div class="form-row" style="margin:0;flex:1;min-width:150px"><label>Tone</label>
-<select id="contentTone"><option>Bold & confident</option><option>Friendly & local</option><option>Luxury & premium</option><option>Helpful & educational</option></select></div>
-<div class="form-row" style="margin:0;min-width:100px"><label>Posts</label>
-<select id="contentCount"><option>30</option><option>45</option><option>60</option></select></div>
-<button class="btn btn-primary" onclick="toast('Generating branded posts with AI...')">Generate Posts</button>
+return `
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Message Templates</div>
+  <div class="toggle-group">
+    <button class="toggle-btn active">Text</button>
+    <button class="toggle-btn">Email</button>
+    <button class="toggle-btn">Both</button>
+  </div>
+  ${templates.map(t=>`<div style="border:1px solid rgba(0,240,255,0.08);padding:14px;margin-bottom:10px;background:rgba(0,240,255,0.02)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-weight:500;font-size:13px;color:var(--text-bright)">${t.name}</span>
+      <span class="platform-tag" style="background:rgba(0,240,255,0.15);color:var(--cyan)">${t.channel.toUpperCase()}</span>
+    </div>
+    <p style="font-size:12px;color:var(--text-dim);line-height:1.5;font-style:italic">${t.preview}</p>
+    <button class="btn btn-cyan btn-sm" style="margin-top:8px" onclick="alert('Template sent!')">SEND</button>
+  </div>`).join('')}
 </div>
-</div>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px">
-${SAMPLE_POSTS.map(p=>{
-const platformColors={Instagram:'#E1306C',Facebook:'#1877F2',TikTok:'#00f2ea',X:'#1DA1F2',LinkedIn:'#0A66C2'};
-return `<div class="glass-card">
-<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-<span style="width:8px;height:8px;border-radius:50%;background:${platformColors[p.platform]||'var(--accent)'}"></span>
-<span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:${platformColors[p.platform]||'var(--accent)'}">${p.platform}</span>
-</div>
-<div style="font-family:var(--font-display);font-size:12px;font-weight:600;margin-bottom:8px;color:var(--text)">${p.hook}</div>
-<p style="font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:8px">${p.caption}</p>
-<p style="font-size:10px;color:var(--accent);opacity:0.7">${p.hashtags}</p>
-</div>`;
-}).join('')}
-</div>
-<div class="glass-card">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Team</h3>
-<div style="display:flex;gap:16px;flex-wrap:wrap">
-${['AJ','MR','KW','TS'].map((init,i)=>`
-<div style="text-align:center">
-<div class="avatar" style="width:48px;height:48px;font-size:16px;margin-bottom:6px">${init}</div>
-<div style="font-size:11px;color:var(--text-dim)">${['Owner','Lead Tech','Installer','Sales'][i]}</div>
-</div>`).join('')}
-</div>
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Recent Sent</div>
+  <div class="feed-item"><div class="feed-dot" style="background:var(--cyan)"></div><div><div class="feed-text">Welcome text sent to Aisha Johnson</div><div class="feed-time">1 hour ago</div></div></div>
+  <div class="feed-item"><div class="feed-dot" style="background:var(--green)"></div><div><div class="feed-text">Appointment reminder to Dana Chen</div><div class="feed-time">3 hours ago</div></div></div>
+  <div class="feed-item"><div class="feed-dot" style="background:var(--amber)"></div><div><div class="feed-text">Follow-up email to Carlos Mendez</div><div class="feed-time">5 hours ago</div></div></div>
 </div>`;
 }
-</script>
 
+// ===== CONTENT STUDIO TAB =====
+function renderContentStudio(){
+const posts=[
+{title:'Tesla Model 3 Full PPF Reveal',desc:'Watch this Tesla go from showroom to bulletproof. Full front PPF with self-healing clear bra. Zero rock chips guaranteed.',platforms:['IG','TikTok','FB'],color:'var(--cyan)'},
+{title:'Ceramic Tint Transformation',desc:'35% ceramic tint on this Audi Q5. Blocks 99% UV, keeps interior 40% cooler. Style meets function.',platforms:['IG','YouTube'],color:'var(--magenta)'},
+{title:'Color Change Wrap: Satin Black',desc:'Ford Mustang goes from factory white to satin black. Fully reversible, fully stunning. DM for pricing.',platforms:['IG','TikTok'],color:'var(--green)'},
+{title:'Before & After: Paint Correction',desc:'3-stage paint correction on this Mercedes C300. Swirl marks eliminated, mirror finish restored. Detail perfection.',platforms:['IG','FB'],color:'var(--amber)'},
+{title:'Custom Rim Package Showcase',desc:'22" forged wheels with low-profile tires on this Silverado. Stance nation approved. Complete packages starting at $2,400.',platforms:['IG','TikTok','YouTube'],color:'#b366ff'},
+{title:'Porsche 911 Gets The Works',desc:'Full PPF + ceramic tint on this 911. Total protection package for the ultimate daily driver. Investment in preservation.',platforms:['IG','YouTube','FB'],color:'var(--cyan)'}
+];
+const platformColors={IG:'#E1306C',TikTok:'#00f2ea',FB:'#1877F2',YouTube:'#FF0000'};
+return `
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Content Studio</div>
+  <p style="color:var(--text-dim);font-size:12px;margin-bottom:16px">Branded social media content ready to post</p>
+  <div class="content-grid">
+    ${posts.map(p=>`<div class="content-card" style="border-left:3px solid ${p.color}">
+      <h4>${p.title}</h4>
+      <p>${p.desc}</p>
+      <div>${p.platforms.map(pl=>`<span class="platform-tag" style="background:${platformColors[pl]}22;color:${platformColors[pl]};border:1px solid ${platformColors[pl]}44">${pl}</span>`).join('')}</div>
+    </div>`).join('')}
+  </div>
+</div>`;
+}
 
-<script>
-// ========== AI ASSISTANT VIEW ==========
+// ===== AI TAB =====
 function renderAI(){
-if(!state.chatHistory||!state.chatHistory.length){
-state.chatHistory=[{role:'ai',text:'Hey! I\'m your AI assistant for Astylez Auto. I can help you figure out who to call today, draft follow-ups, analyze your pipeline, or find upsell opportunities. What can I help with?'}];
-}
-document.getElementById('view-ai').innerHTML=`
-<h2 class="section-title">AI Assistant</h2>
-<div class="glass-card chat-container">
-<div class="chat-messages" id="chatMessages">
-${state.chatHistory.map(m=>`<div class="chat-bubble ${m.role}">${m.text}</div>`).join('')}
-</div>
-<div style="padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap">
-<button class="btn btn-sm" onclick="quickAI('Who to call today?')">Who to call today?</button>
-<button class="btn btn-sm" onclick="quickAI('Draft a follow-up')">Draft a follow-up</button>
-<button class="btn btn-sm" onclick="quickAI('Summarize the week')">Summarize the week</button>
-<button class="btn btn-sm" onclick="quickAI('Best upsell opportunities')">Best upsell opportunities</button>
-</div>
-<div class="chat-input-area">
-<textarea id="chatInput" placeholder="Ask anything about your business..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
-<button class="btn btn-primary" onclick="sendChat()">Send</button>
-</div>
+return `
+<div class="hud-card" style="padding:0;overflow:hidden"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div style="padding:16px 20px;border-bottom:1px solid rgba(0,240,255,0.1)">
+    <div class="card-title" style="margin:0">AI Assistant</div>
+  </div>
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages">
+      ${chatHistory.map(m=>`<div class="chat-bubble ${m.role}">${m.text}</div>`).join('')}
+    </div>
+    <div class="quick-actions" style="padding:8px 12px;border-top:1px solid rgba(0,240,255,0.05)">
+      <div class="quick-action" onclick="aiQuick('summary')">Daily Summary</div>
+      <div class="quick-action" onclick="aiQuick('followups')">Follow-up List</div>
+      <div class="quick-action" onclick="aiQuick('revenue')">Revenue Report</div>
+      <div class="quick-action" onclick="aiQuick('schedule')">Today's Schedule</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn btn-cyan btn-sm" onclick="sendChat()">SEND</button>
+    </div>
+  </div>
 </div>`;
-scrollChat();
-}
-
-function scrollChat(){
-const el=document.getElementById('chatMessages');
-if(el)el.scrollTop=el.scrollHeight;
-}
-
-function quickAI(text){
-document.getElementById('chatInput').value=text;
-sendChat();
 }
 
 function sendChat(){
 const input=document.getElementById('chatInput');
-const text=input?.value?.trim();if(!text)return;
-state.chatHistory.push({role:'user',text});
+const text=input.value.trim();if(!text)return;
+chatHistory.push({role:'user',text});
 input.value='';
-
-// Generate contextual AI response
-let response='';
-const tl=text.toLowerCase();
-if(tl.includes('call')||tl.includes('who')){
-const needsCall=state.leads.filter(l=>l.status==='New'||l.status==='Contacted');
-response=`Based on your pipeline, here are the priority calls:\n\n${needsCall.slice(0,4).map((l,i)=>`${i+1}. **${l.name}** - ${l.service} (${formatCurrency(l.value)}) - Status: ${l.status}`).join('\n')}\n\nI'd start with the highest-value New leads first. Marcus Rodriguez ($4,800 PPF) and Aisha Johnson ($4,200 wrap) are your top priority.`;
-}else if(tl.includes('follow')||tl.includes('draft')){
-const lead=state.leads.find(l=>l.status==='Contacted')||state.leads[0];
-response=`Here's a follow-up draft for ${lead.name}:\n\n"Hey ${lead.name.split(' ')[0]}, just checking in about the ${lead.service} we discussed. I've got some availability this week if you'd like to come in for a closer look. Let me know what works!"\n\nWant me to adjust the tone or make it more specific?`;
-}else if(tl.includes('summarize')||tl.includes('week')){
-const newCount=state.leads.filter(l=>l.created>Date.now()-7*86400000).length;
-const wonCount=state.leads.filter(l=>l.status==='Won').length;
-const pipeline=state.leads.filter(l=>l.status!=='Lost').reduce((s,l)=>s+l.value,0);
-response=`**Weekly Summary:**\n\n- ${newCount} new leads this week\n- ${wonCount} deals won\n- ${state.appointments.length} appointments scheduled\n- Pipeline value: ${formatCurrency(pipeline)}\n\nYour conversion rate is looking solid. The PPF and wrap services are driving the highest revenue per job.`;
-}else if(tl.includes('upsell')){
-response=`**Best Upsell Opportunities:**\n\n1. **Dana Chen** (Window Tint $450) → Suggest ceramic upgrade (+$200) or add PPF for hood\n2. **Carlos Mendez** (Rims $2,400) → Suggest ceramic tint to complete the look (+$650)\n3. **Theo Washington** (Wrap $3,200) → PPF under the wrap for double protection (+$1,500)\n\nTotal potential upsell revenue: ~$2,350. Want me to draft messages for any of these?`;
-}else{
-response=`I can help with that! Here's what I know about your current business:\n\n- ${state.leads.length} total leads in your pipeline\n- ${state.appointments.length} upcoming appointments\n- Top services: PPF, Vinyl Wrap, Window Tint\n\nIs there something specific you'd like me to dig into?`;
+// AI response
+const response=generateAIResponse(text);
+chatHistory.push({role:'ai',text:response});
+saveData();
+const msgs=document.getElementById('chatMessages');
+msgs.innerHTML+=`<div class="chat-bubble user">${text}</div><div class="chat-bubble ai">${response}</div>`;
+msgs.scrollTop=msgs.scrollHeight;
 }
 
-state.chatHistory.push({role:'ai',text:response});
-saveData();renderAI();
+function aiQuick(type){
+const queries={
+summary:`Here's your daily summary:\n- ${leads.filter(l=>l.status==='new').length} new leads pending\n- ${appointments.length} appointments scheduled\n- $${leads.filter(l=>l.status==='won').reduce((s,l)=>s+l.value,0).toLocaleString()} total revenue from won deals\n- Top service: ${getMostPopularService()}`,
+followups:`Follow-up needed:\n${leads.filter(l=>l.status==='contacted').map(l=>'- '+l.name+' ('+l.service+')').join('\n')||'No pending follow-ups!'}`,
+revenue:`Revenue breakdown:\n- Won deals: $${leads.filter(l=>l.status==='won').reduce((s,l)=>s+l.value,0).toLocaleString()}\n- Pipeline value: $${leads.filter(l=>l.status!=='won'&&l.status!=='lost').reduce((s,l)=>s+l.value,0).toLocaleString()}\n- Avg deal size: $${Math.round(leads.reduce((s,l)=>s+l.value,0)/leads.length).toLocaleString()}`,
+schedule:`Upcoming appointments:\n${appointments.sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3).map(a=>'- '+a.date+' '+a.time+': '+a.client+' ('+a.service+')').join('\n')||'No appointments scheduled'}`
+};
+chatHistory.push({role:'ai',text:queries[type]});
+saveData();renderContent();
+setTimeout(()=>{const msgs=document.getElementById('chatMessages');if(msgs)msgs.scrollTop=msgs.scrollHeight;},100);
 }
-</script>
 
+function generateAIResponse(text){
+const lower=text.toLowerCase();
+if(lower.includes('lead')||lower.includes('new'))return `You currently have ${leads.filter(l=>l.status==='new').length} new leads waiting for contact. The highest value is ${leads.sort((a,b)=>b.value-a.value)[0]?.name} at $${leads.sort((a,b)=>b.value-a.value)[0]?.value.toLocaleString()}.`;
+if(lower.includes('revenue')||lower.includes('money')||lower.includes('sales'))return `Total revenue from won deals: $${leads.filter(l=>l.status==='won').reduce((s,l)=>s+l.value,0).toLocaleString()}. Your pipeline has $${leads.filter(l=>l.status!=='won'&&l.status!=='lost').reduce((s,l)=>s+l.value,0).toLocaleString()} in potential revenue.`;
+if(lower.includes('schedule')||lower.includes('appointment'))return `You have ${appointments.length} appointments coming up. Next one: ${appointments[0]?.client||'None'} - ${appointments[0]?.service||'N/A'}.`;
+if(lower.includes('service')||lower.includes('popular'))return `Most requested service: ${getMostPopularService()}. PPF and wraps generate the highest revenue per job.`;
+return `I can help you with lead management, scheduling, revenue reports, and business insights. Try asking about your leads, revenue, or upcoming appointments!`;
+}
 
-<script>
-// ========== SETTINGS VIEW ==========
+function getMostPopularService(){
+const counts={};leads.forEach(l=>{counts[l.service]=(counts[l.service]||0)+1;});
+return Object.entries(counts).sort((a,b)=>b[1]-a[1])[0]?.[0]||'N/A';
+}
+
+// ===== SETUP TAB =====
 function renderSetup(){
-const s=state.settings;
-const colors=['#00f0ff','#6366f1','#a855f7','#10b981','#f59e0b','#ef4444','#ec4899','#14b8a6'];
-document.getElementById('view-setup').innerHTML=`
-<h2 class="section-title">Settings</h2>
-<div class="glass-card" style="margin-bottom:16px">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Business Identity</h3>
-<div class="form-row-2">
-<div class="form-row"><label>Business Name</label><input id="setName" value="${s.name}" onchange="updateSetting('name',this.value)"></div>
-<div class="form-row"><label>Tagline</label><input id="setTagline" value="${s.tagline}" onchange="updateSetting('tagline',this.value)"></div>
+const biz=JSON.parse(localStorage.getItem('az_business')||'{}');
+return `
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Settings & Configuration</div>
 </div>
-<div class="form-row-2">
-<div class="form-row"><label>Phone</label><input id="setPhone" value="${s.phone}" onchange="updateSetting('phone',this.value)"></div>
-<div class="form-row"><label>Website</label><input id="setWebsite" value="${s.website}" onchange="updateSetting('website',this.value)"></div>
+<div class="settings-group">
+  <h4>BUSINESS IDENTITY</h4>
+  <div class="form-group"><label>Business Name</label><input id="sBizName" value="${biz.name||'Astylez Auto'}"></div>
+  <div class="form-group"><label>Phone</label><input id="sBizPhone" value="${biz.phone||'(720) 555-0100'}"></div>
+  <div class="form-group"><label>Email</label><input id="sBizEmail" value="${biz.email||'info@astylezauto.com'}"></div>
+  <div class="form-group"><label>Address</label><input id="sBizAddr" value="${biz.address||'1234 Custom Dr, Denver CO'}"></div>
+  <button class="btn btn-cyan" onclick="saveBusiness()">SAVE SETTINGS</button>
 </div>
-<div class="form-row"><label>About</label><textarea id="setAbout" onchange="updateSetting('about',this.value)">${s.about}</textarea></div>
+<div class="settings-group">
+  <h4>ACCENT COLOR</h4>
+  <div class="color-options">
+    <div class="color-opt active" style="background:#00f0ff" onclick="setAccent('#00f0ff')"></div>
+    <div class="color-opt" style="background:#ff2d7b" onclick="setAccent('#ff2d7b')"></div>
+    <div class="color-opt" style="background:#00ff88" onclick="setAccent('#00ff88')"></div>
+    <div class="color-opt" style="background:#ff8800" onclick="setAccent('#ff8800')"></div>
+    <div class="color-opt" style="background:#b366ff" onclick="setAccent('#b366ff')"></div>
+  </div>
 </div>
-<div class="glass-card" style="margin-bottom:16px">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Accent Color</h3>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
-${colors.map(c=>`<div onclick="setAccentColor('${c}')" style="width:32px;height:32px;border-radius:8px;background:${c};cursor:pointer;border:2px solid ${c===s.accent?'#fff':'transparent'};transition:all 0.2s"></div>`).join('')}
-<input type="color" value="${s.accent}" onchange="setAccentColor(this.value)" style="width:32px;height:32px;padding:0;border:none;border-radius:8px;cursor:pointer">
-</div>
-</div>
-<div class="glass-card" style="margin-bottom:16px">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Scene Backdrop</h3>
-<div class="form-row"><label>Background Image URL</label><input placeholder="Paste image URL or leave empty for aurora" onchange="setBackdrop(this.value)"></div>
-</div>
-<div class="glass-card" style="margin-bottom:16px">
-<h3 style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)">Data Management</h3>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn btn-primary" onclick="exportJSON()">Export JSON</button>
-<button class="btn" onclick="reloadSample()">Reload Sample Data</button>
-<button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
-</div>
-</div>
-<div class="glass-card" style="border-left:3px solid var(--secondary);padding:12px 16px">
-<p style="font-size:12px;color:var(--text-dim)">Supabase: Connect your Supabase project for cloud sync. Add your project URL and anon key in the environment to enable real-time multi-device access.</p>
+<div class="settings-group">
+  <h4>DATA MANAGEMENT</h4>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-cyan btn-sm" onclick="exportData()">EXPORT DATA</button>
+    <button class="btn btn-green btn-sm" onclick="importData()">IMPORT DATA</button>
+    <button class="btn btn-magenta btn-sm" onclick="clearData()">CLEAR ALL DATA</button>
+  </div>
 </div>`;
 }
 
-function updateSetting(key,val){
-state.settings[key]=val;saveData();
-if(key==='name'){document.querySelector('.brand-info h1').textContent=val}
+function saveBusiness(){
+const biz={name:document.getElementById('sBizName').value,phone:document.getElementById('sBizPhone').value,
+email:document.getElementById('sBizEmail').value,address:document.getElementById('sBizAddr').value};
+localStorage.setItem('az_business',JSON.stringify(biz));
+alert('Settings saved!');
 }
 
-function setAccentColor(color){
-state.settings.accent=color;saveData();
-document.documentElement.style.setProperty('--accent',color);
-const r=parseInt(color.slice(1,3),16),g=parseInt(color.slice(3,5),16),b=parseInt(color.slice(5,7),16);
-document.documentElement.style.setProperty('--accent-rgb',`${r},${g},${b}`);
-renderSetup();
+function setAccent(color){
+document.documentElement.style.setProperty('--cyan',color);
+document.querySelectorAll('.color-opt').forEach(el=>{el.classList.toggle('active',el.style.background===color);});
+localStorage.setItem('az_accent',color);
 }
 
-function setBackdrop(url){
-const aurora=document.querySelector('.aurora-bg');
-if(url){aurora.style.backgroundImage=`url(${url})`;aurora.style.backgroundSize='cover';aurora.style.backgroundPosition='center'}
-else{aurora.style.backgroundImage='';aurora.style.backgroundSize=''}
+function exportData(){
+const data=JSON.stringify({leads,appointments,chatHistory,business:JSON.parse(localStorage.getItem('az_business')||'{}')},null,2);
+const blob=new Blob([data],{type:'application/json'});
+const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='astylez-auto-backup.json';a.click();
 }
 
-function exportJSON(){
-const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-const url=URL.createObjectURL(blob);
-const a=document.createElement('a');a.href=url;a.download='astylez-data.json';a.click();
-URL.revokeObjectURL(url);toast('Data exported');
+function importData(){
+const input=document.createElement('input');input.type='file';input.accept='.json';
+input.onchange=e=>{const reader=new FileReader();reader.onload=ev=>{
+try{const data=JSON.parse(ev.target.result);
+if(data.leads)leads=data.leads;if(data.appointments)appointments=data.appointments;
+if(data.chatHistory)chatHistory=data.chatHistory;
+if(data.business)localStorage.setItem('az_business',JSON.stringify(data.business));
+saveData();renderContent();alert('Data imported!');}catch(err){alert('Invalid file');}};
+reader.readAsText(e.target.files[0]);};input.click();
 }
 
-function reloadSample(){
-if(!confirm('Replace all data with sample data?'))return;
-state={leads:[...DEFAULT_LEADS],appointments:[...DEFAULT_APPTS],settings:{...DEFAULT_SETTINGS},chatHistory:[]};
-saveData();toast('Sample data loaded');renderDashboard();
-}
+function clearData(){
+if(confirm('Clear ALL data? This cannot be undone.')){
+leads=[...DEFAULT_LEADS];appointments=[...DEFAULT_APPTS];chatHistory=[];
+saveData();localStorage.removeItem('az_business');renderContent();alert('Data reset to defaults.');}}
 
-function clearAllData(){
-if(!confirm('Delete ALL data? This cannot be undone.'))return;
-state={leads:[],appointments:[],settings:{...DEFAULT_SETTINGS},chatHistory:[]};
-saveData();toast('All data cleared');renderDashboard();
-}
+// ===== INIT =====
+const savedAccent=localStorage.getItem('az_accent');
+if(savedAccent)document.documentElement.style.setProperty('--cyan',savedAccent);
+renderNav();
+renderContent();
 </script>
-
-
-<script>
-// ========== INIT ==========
-// Apply saved accent color
-if(state.settings.accent && state.settings.accent !== '#00f0ff'){
-setAccentColor(state.settings.accent);
-}
-
-// Render initial dashboard
-renderDashboard();
-</script>
-
 </body>
 </html>
