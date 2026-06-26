@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ASTYLEZ AUTO | Command Center</title>
+<title>SPARTAAUTO360 | Command Center</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -202,8 +202,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg-deep);color:var(--text-b
 
 <header class="top-bar">
 <div class="logo-area">
-<div class="hex-logo">A</div>
-<div class="brand"><span class="brand-name">ASTYLEZ AUTO</span><span class="brand-sub">Command Center</span></div>
+<div class="hex-logo">S</div>
+<div class="brand"><span class="brand-name">SPARTAAUTO360</span><span class="brand-sub">Command Center</span></div>
 </div>
 <div class="status-area">
 <div class="status-dot"></div>
@@ -245,7 +245,7 @@ function getRelativeDate(daysFromNow){const d=new Date();d.setDate(d.getDate()+d
 let leads = JSON.parse(localStorage.getItem('az_leads')) || [...DEFAULT_LEADS];
 let appointments = JSON.parse(localStorage.getItem('az_appts')) || [...DEFAULT_APPTS];
 let chatHistory = JSON.parse(localStorage.getItem('az_chat')) || [
-{role:'ai',text:'Welcome to the Astylez Auto AI Assistant. I can help you manage leads, schedule appointments, and provide business insights. What would you like to do?'}
+{role:'ai',text:'Welcome to the SpartaAuto360 AI Assistant. I can help you manage leads, schedule appointments, and provide business insights. What would you like to do?'}
 ];
 let currentTab = 'home';
 
@@ -562,7 +562,7 @@ return `
         <ellipse cx="107" cy="246" rx="14" ry="6" fill="url(#metalHead)" stroke="rgba(0,240,255,0.15)" stroke-width="0.5"/>
       </svg>
     </div>
-    <div style="text-align:center;margin-top:8px;font-family:'Orbitron',monospace;font-size:10px;color:var(--cyan);letter-spacing:2px;text-shadow:0 0 10px rgba(0,240,255,0.5)">ASTYLEZ AI &bull; ONLINE</div>
+    <div style="text-align:center;margin-top:8px;font-family:'Orbitron',monospace;font-size:10px;color:var(--cyan);letter-spacing:2px;text-shadow:0 0 10px rgba(0,240,255,0.5)">SPARTA AI &bull; ONLINE</div>
   </div>
 </div>
 
@@ -857,10 +857,10 @@ return `
 // ===== MESSAGES TAB =====
 function renderMessages(){
 const templates=[
-{name:'New Lead Welcome',channel:'text',preview:'Hey {name}! Thanks for reaching out to Astylez Auto about {service}. We\'d love to get you scheduled for a consultation. What day works best?'},
+{name:'New Lead Welcome',channel:'text',preview:'Hey {name}! Thanks for reaching out to SpartaAuto360 about {service}. We\'d love to get you scheduled for a consultation. What day works best?'},
 {name:'Quote Follow-Up',channel:'both',preview:'Hi {name}, just following up on your {service} quote for your {vehicle}. Ready to lock in that appointment? We have openings this week!'},
-{name:'Appointment Reminder',channel:'text',preview:'Reminder: Your {service} appointment at Astylez Auto is tomorrow at {time}. Please arrive 10 min early. See you then!'},
-{name:'Post-Service Review',channel:'email',preview:'Hey {name}! How\'s the {service} looking on your {vehicle}? We\'d love a quick Google review if you have a moment. Thanks for choosing Astylez Auto!'}
+{name:'Appointment Reminder',channel:'text',preview:'Reminder: Your {service} appointment at SpartaAuto360 is tomorrow at {time}. Please arrive 10 min early. See you then!'},
+{name:'Post-Service Review',channel:'email',preview:'Hey {name}! How\'s the {service} looking on your {vehicle}? We\'d love a quick Google review if you have a moment. Thanks for choosing SpartaAuto360!'}
 ];
 return `
 <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
@@ -986,9 +986,9 @@ return `
 </div>
 <div class="settings-group">
   <h4>BUSINESS IDENTITY</h4>
-  <div class="form-group"><label>Business Name</label><input id="sBizName" value="${biz.name||'Astylez Auto'}"></div>
+  <div class="form-group"><label>Business Name</label><input id="sBizName" value="${biz.name||'SpartaAuto360'}"></div>
   <div class="form-group"><label>Phone</label><input id="sBizPhone" value="${biz.phone||'(720) 555-0100'}"></div>
-  <div class="form-group"><label>Email</label><input id="sBizEmail" value="${biz.email||'info@astylezauto.com'}"></div>
+  <div class="form-group"><label>Email</label><input id="sBizEmail" value="${biz.email||'info@spartaauto360.com'}"></div>
   <div class="form-group"><label>Address</label><input id="sBizAddr" value="${biz.address||'1234 Custom Dr, Denver CO'}"></div>
   <button class="btn btn-cyan" onclick="saveBusiness()">SAVE SETTINGS</button>
 </div>
@@ -1028,7 +1028,7 @@ localStorage.setItem('az_accent',color);
 function exportData(){
 const data=JSON.stringify({leads,appointments,chatHistory,business:JSON.parse(localStorage.getItem('az_business')||'{}')},null,2);
 const blob=new Blob([data],{type:'application/json'});
-const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='astylez-auto-backup.json';a.click();
+const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='spartaauto360-backup.json';a.click();
 }
 
 function importData(){
