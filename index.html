@@ -49,14 +49,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg-deep);color:var(--text-b
 .robot-container{display:flex;justify-content:center;align-items:center;padding:30px 0;position:relative}
 .robot-glow{position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(0,240,255,0.15) 0%,transparent 70%);border-radius:50%;animation:robotGlow 3s ease-in-out infinite}
 @keyframes robotGlow{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.2);opacity:0.8}}
-.robot-svg{position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(0,240,255,0.4));animation:robotFloat 4s ease-in-out infinite}
-@keyframes robotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.robot-svg{position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(0,240,255,0.3)) drop-shadow(0 8px 16px rgba(0,0,0,0.5));animation:robotFloat 4s ease-in-out infinite}
+@keyframes robotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .robot-svg .joint{animation:jointPulse 2s ease-in-out infinite}
 @keyframes jointPulse{0%,100%{opacity:0.8}50%{opacity:1}}
 .robot-svg .eye{animation:eyeBlink 4s ease-in-out infinite}
-@keyframes eyeBlink{0%,45%,55%,100%{r:4}50%{r:1}}
-.robot-arm-right{animation:armWave 3s ease-in-out infinite;transform-origin:60px 95px}
-@keyframes armWave{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-15deg)}75%{transform:rotate(10deg)}}
+@keyframes eyeBlink{0%,45%,55%,100%{r:5}50%{r:2}}
+.robot-arm-right{animation:armWave 3s ease-in-out infinite;transform-origin:132px 100px}
+@keyframes armWave{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-12deg)}75%{transform:rotate(8deg)}}
 
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
 .kpi-value{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--text-bright)}
@@ -146,6 +146,53 @@ body{font-family:'Inter',sans-serif;background:var(--bg-deep);color:var(--text-b
 .voice-metric .vm-label{font-size:11px;color:var(--text-muted);flex:1}.voice-metric .vm-value{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--text-bright)}
 @media(max-width:768px){.kpi-grid{grid-template-columns:1fr 1fr}.chart-grid{grid-template-columns:1fr}.flow-container{flex-direction:column}.hud-table{font-size:11px}.nav-btn{padding:8px 8px;font-size:9px}.top-bar{padding:0 12px}.brand-name{font-size:11px}}
 @media(max-width:480px){.kpi-grid{grid-template-columns:1fr}.nav-btn span{display:none}}
+
+/* CANDLESTICK CHART */
+.candlestick-chart{display:flex;align-items:center;justify-content:space-around;height:180px;padding:10px 0;position:relative}
+.candlestick-chart::before{content:'';position:absolute;bottom:20px;left:0;right:0;height:1px;background:rgba(0,240,255,0.1)}
+.candle{display:flex;flex-direction:column;align-items:center;position:relative;height:100%}
+.candle-wick{width:1.5px;background:rgba(255,255,255,0.3);position:absolute}
+.candle-body{width:14px;border-radius:2px;position:absolute;min-height:4px;box-shadow:0 0 8px currentColor;transition:all 1s ease}
+.candle-body.bull{background:linear-gradient(180deg,var(--green),rgba(0,255,136,0.6));color:var(--green)}
+.candle-body.bear{background:linear-gradient(180deg,var(--magenta),rgba(255,45,123,0.6));color:var(--magenta)}
+
+/* WAVEFORM */
+.waveform-container{height:80px;position:relative;overflow:hidden;border-radius:4px;background:rgba(0,240,255,0.02);border:1px solid rgba(0,240,255,0.08)}
+.waveform-canvas{width:100%;height:100%;display:block}
+
+/* CIRCULAR GAUGES */
+.gauge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:16px}
+.gauge{display:flex;flex-direction:column;align-items:center;gap:8px}
+.gauge-ring{position:relative;width:90px;height:90px}
+.gauge-ring svg{transform:rotate(-90deg)}
+.gauge-ring circle{fill:none;stroke-linecap:round;transition:stroke-dashoffset 2s cubic-bezier(0.4,0,0.2,1)}
+.gauge-value{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--text-bright)}
+.gauge-label{font-size:10px;color:var(--text-muted);font-family:'Orbitron',monospace;letter-spacing:1px;text-align:center}
+
+/* SCROLLING DATA PANELS */
+.scroll-panel{overflow:hidden;height:28px;position:relative}
+.scroll-panel-inner{animation:scrollUp 10s linear infinite}
+@keyframes scrollUp{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+.scroll-item{height:28px;display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim)}
+.scroll-item .ticker{color:var(--cyan);font-weight:600;min-width:50px}
+.scroll-item .value{color:var(--text-bright)}
+.scroll-item .change-up{color:var(--green)}
+.scroll-item .change-down{color:var(--magenta)}
+
+/* LIVE TICKER BAR */
+.ticker-bar{overflow:hidden;height:32px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.08);margin-bottom:16px;display:flex;align-items:center}
+.ticker-track{display:flex;animation:tickerScroll 30s linear infinite;white-space:nowrap}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 24px;font-family:'JetBrains Mono',monospace;font-size:11px}
+.ticker-item .t-symbol{color:var(--cyan);font-weight:600}
+.ticker-item .t-up{color:var(--green)}
+.ticker-item .t-down{color:var(--magenta)}
+
+/* 3D ROBOT ENHANCED */
+.robot-container{display:flex;justify-content:center;align-items:center;padding:20px 0;position:relative}
+.robot-glow{position:absolute;width:250px;height:250px;background:radial-gradient(circle,rgba(0,240,255,0.12) 0%,rgba(123,47,255,0.05) 40%,transparent 70%);border-radius:50%;animation:robotGlow 3s ease-in-out infinite}
+.robot-floor{position:absolute;bottom:10px;width:120px;height:20px;background:radial-gradient(ellipse,rgba(0,240,255,0.2) 0%,transparent 70%);border-radius:50%;animation:floorPulse 3s ease-in-out infinite}
+@keyframes floorPulse{0%,100%{transform:scaleX(1);opacity:0.6}50%{transform:scaleX(1.3);opacity:0.3}}
 </style>
 </head>
 <body>
@@ -301,6 +348,24 @@ const lineMax=Math.max(...lineData);
 const linePoints=lineData.map((v,i)=>`${i*(280/13)},${140-((v/lineMax)*120)}`).join(' ');
 
 return `
+<!-- Live Ticker Bar -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <div class="ticker-item"><span class="t-symbol">PPF</span><span class="t-up">+18%</span> revenue</div>
+    <div class="ticker-item"><span class="t-symbol">TINT</span><span class="t-up">+12%</span> bookings</div>
+    <div class="ticker-item"><span class="t-symbol">WRAP</span><span class="t-down">-3%</span> inquiries</div>
+    <div class="ticker-item"><span class="t-symbol">CERAMIC</span><span class="t-up">+24%</span> demand</div>
+    <div class="ticker-item"><span class="t-symbol">LEADS</span><span class="t-up">+${leads.filter(l=>l.status==='new').length}</span> new today</div>
+    <div class="ticker-item"><span class="t-symbol">REVENUE</span><span class="t-up">$${leads.filter(l=>l.status==='won').reduce((s,l)=>s+l.value,0).toLocaleString()}</span> closed</div>
+    <div class="ticker-item"><span class="t-symbol">PPF</span><span class="t-up">+18%</span> revenue</div>
+    <div class="ticker-item"><span class="t-symbol">TINT</span><span class="t-up">+12%</span> bookings</div>
+    <div class="ticker-item"><span class="t-symbol">WRAP</span><span class="t-down">-3%</span> inquiries</div>
+    <div class="ticker-item"><span class="t-symbol">CERAMIC</span><span class="t-up">+24%</span> demand</div>
+    <div class="ticker-item"><span class="t-symbol">LEADS</span><span class="t-up">+${leads.filter(l=>l.status==='new').length}</span> new today</div>
+    <div class="ticker-item"><span class="t-symbol">REVENUE</span><span class="t-up">$${leads.filter(l=>l.status==='won').reduce((s,l)=>s+l.value,0).toLocaleString()}</span> closed</div>
+  </div>
+</div>
+
 <div class="kpi-grid">
   <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
     <div class="card-title">Total Leads</div>
@@ -345,41 +410,156 @@ return `
     <div class="card-title">AI Assistant</div>
     <div class="robot-container">
       <div class="robot-glow"></div>
-      <svg class="robot-svg" width="140" height="200" viewBox="0 0 140 200">
-        <!-- Head -->
-        <rect x="40" y="20" width="60" height="50" rx="12" fill="rgba(200,220,240,0.9)" stroke="var(--cyan)" stroke-width="1.5"/>
-        <rect x="44" y="25" width="52" height="40" rx="8" fill="rgba(10,14,26,0.8)"/>
-        <!-- Eyes -->
-        <circle class="eye" cx="60" cy="45" r="4" fill="var(--cyan)"><animate attributeName="opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite"/></circle>
-        <circle class="eye" cx="80" cy="45" r="4" fill="var(--cyan)"><animate attributeName="opacity" values="1;0.5;1" dur="3s" begin="0.5s" repeatCount="indefinite"/></circle>
+      <div class="robot-floor"></div>
+      <svg class="robot-svg" width="180" height="260" viewBox="0 0 180 260">
+        <defs>
+          <!-- 3D Metallic Gradients -->
+          <linearGradient id="metalHead" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e8f4ff"/>
+            <stop offset="30%" stop-color="#c0d8e8"/>
+            <stop offset="60%" stop-color="#a0b8d0"/>
+            <stop offset="100%" stop-color="#708898"/>
+          </linearGradient>
+          <linearGradient id="metalBody" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#d0e4f0"/>
+            <stop offset="25%" stop-color="#b8cce0"/>
+            <stop offset="50%" stop-color="#90a8c0"/>
+            <stop offset="100%" stop-color="#607080"/>
+          </linearGradient>
+          <linearGradient id="metalArm" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#c8dce8"/>
+            <stop offset="50%" stop-color="#a8bcd0"/>
+            <stop offset="100%" stop-color="#7890a8"/>
+          </linearGradient>
+          <linearGradient id="metalLeg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#b8ccd8"/>
+            <stop offset="50%" stop-color="#98b0c0"/>
+            <stop offset="100%" stop-color="#6880a0"/>
+          </linearGradient>
+          <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="40%" stop-color="#00f0ff"/>
+            <stop offset="100%" stop-color="#0080a0"/>
+          </radialGradient>
+          <radialGradient id="chestCore" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00f0ff"/>
+            <stop offset="60%" stop-color="#0080c0"/>
+            <stop offset="100%" stop-color="#003050"/>
+          </radialGradient>
+          <linearGradient id="screenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#0a1a2a"/>
+            <stop offset="100%" stop-color="#051015"/>
+          </linearGradient>
+          <filter id="robotShadow"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="rgba(0,0,0,0.4)"/></filter>
+          <filter id="glowFilter"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        
+        <!-- Shadow on ground -->
+        <ellipse cx="90" cy="248" rx="40" ry="8" fill="rgba(0,0,0,0.3)" filter="url(#robotShadow)"/>
+        
         <!-- Antenna -->
-        <line x1="70" y1="20" x2="70" y2="8" stroke="var(--cyan)" stroke-width="2"/>
-        <circle cx="70" cy="6" r="4" fill="var(--cyan)" opacity="0.8"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/></circle>
+        <line x1="90" y1="22" x2="90" y2="6" stroke="url(#metalArm)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="90" cy="4" r="5" fill="url(#eyeGlow)" filter="url(#glowFilter)">
+          <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        
+        <!-- Head -->
+        <rect x="55" y="22" width="70" height="55" rx="16" fill="url(#metalHead)" stroke="rgba(0,240,255,0.3)" stroke-width="1"/>
+        <!-- Head highlight -->
+        <rect x="60" y="25" width="60" height="12" rx="8" fill="rgba(255,255,255,0.15)"/>
+        <!-- Face screen -->
+        <rect x="62" y="32" width="56" height="38" rx="10" fill="url(#screenGrad)" stroke="rgba(0,240,255,0.2)" stroke-width="0.5"/>
+        <!-- Eyes -->
+        <circle class="eye" cx="78" cy="50" r="5" fill="url(#eyeGlow)" filter="url(#glowFilter)">
+          <animate attributeName="opacity" values="1;0.4;1" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle class="eye" cx="102" cy="50" r="5" fill="url(#eyeGlow)" filter="url(#glowFilter)">
+          <animate attributeName="opacity" values="1;0.4;1" dur="3s" begin="0.3s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Mouth/speaker -->
+        <rect x="80" y="60" width="20" height="3" rx="1.5" fill="rgba(0,240,255,0.4)">
+          <animate attributeName="width" values="20;16;20" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="x" values="80;82;80" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Ear pieces -->
+        <rect x="50" y="40" width="6" height="20" rx="3" fill="url(#metalArm)" stroke="rgba(0,240,255,0.2)" stroke-width="0.5"/>
+        <rect x="124" y="40" width="6" height="20" rx="3" fill="url(#metalArm)" stroke="rgba(0,240,255,0.2)" stroke-width="0.5"/>
+        
         <!-- Neck -->
-        <rect x="62" y="70" width="16" height="10" fill="rgba(150,170,200,0.7)" rx="3"/>
+        <rect x="78" y="77" width="24" height="14" rx="4" fill="url(#metalArm)"/>
+        <rect x="82" y="80" width="16" height="3" rx="1.5" fill="rgba(0,240,255,0.2)"/>
+        <rect x="82" y="85" width="16" height="3" rx="1.5" fill="rgba(0,240,255,0.15)"/>
+        
         <!-- Body -->
-        <rect x="35" y="80" width="70" height="60" rx="10" fill="rgba(200,220,240,0.85)" stroke="var(--cyan)" stroke-width="1"/>
-        <circle class="joint" cx="70" cy="100" r="8" fill="none" stroke="var(--cyan)" stroke-width="1.5" opacity="0.6"><animate attributeName="r" values="6;10;6" dur="3s" repeatCount="indefinite"/></circle>
-        <circle cx="70" cy="100" r="3" fill="var(--cyan)"/>
-        <!-- Arms -->
-        <g class="robot-arm-right">
-          <rect x="105" y="85" width="12" height="40" rx="6" fill="rgba(180,200,220,0.8)"/>
-          <circle cx="111" cy="130" r="5" fill="rgba(200,220,240,0.9)" stroke="var(--cyan)" stroke-width="1"/>
-        </g>
-        <rect x="23" y="85" width="12" height="40" rx="6" fill="rgba(180,200,220,0.8)"/>
-        <circle cx="29" cy="130" r="5" fill="rgba(200,220,240,0.9)" stroke="var(--cyan)" stroke-width="1"/>
-        <!-- Legs -->
-        <rect x="48" y="140" width="14" height="40" rx="6" fill="rgba(180,200,220,0.8)"/>
-        <rect x="78" y="140" width="14" height="40" rx="6" fill="rgba(180,200,220,0.8)"/>
-        <!-- Feet -->
-        <ellipse cx="55" cy="182" rx="12" ry="5" fill="rgba(160,180,200,0.9)"/>
-        <ellipse cx="85" cy="182" rx="12" ry="5" fill="rgba(160,180,200,0.9)"/>
-        <!-- Joint circles -->
-        <circle class="joint" cx="55" cy="140" r="4" fill="var(--cyan)" opacity="0.5"/>
-        <circle class="joint" cx="85" cy="140" r="4" fill="var(--cyan)" opacity="0.5"/>
+        <rect x="48" y="91" width="84" height="72" rx="14" fill="url(#metalBody)" stroke="rgba(0,240,255,0.2)" stroke-width="1"/>
+        <!-- Body highlight -->
+        <rect x="54" y="94" width="72" height="15" rx="8" fill="rgba(255,255,255,0.08)"/>
+        <!-- Chest core -->
+        <circle cx="90" cy="120" r="14" fill="url(#chestCore)" filter="url(#glowFilter)">
+          <animate attributeName="r" values="12;15;12" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="90" cy="120" r="8" fill="none" stroke="rgba(0,240,255,0.6)" stroke-width="1.5">
+          <animate attributeName="r" values="8;18;8" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite"/>
+        </circle>
         <!-- Chest details -->
-        <rect x="55" y="110" width="30" height="4" rx="2" fill="var(--cyan)" opacity="0.4"/>
-        <rect x="55" y="118" width="20" height="4" rx="2" fill="var(--cyan)" opacity="0.3"/>
+        <rect x="62" y="140" width="56" height="4" rx="2" fill="rgba(0,240,255,0.2)"/>
+        <rect x="68" y="148" width="44" height="3" rx="1.5" fill="rgba(0,240,255,0.15)"/>
+        <rect x="74" y="155" width="32" height="3" rx="1.5" fill="rgba(0,240,255,0.1)"/>
+        <!-- Shoulder joints -->
+        <circle cx="48" cy="100" r="8" fill="url(#metalHead)" stroke="rgba(0,240,255,0.3)" stroke-width="1"/>
+        <circle cx="48" cy="100" r="3" fill="rgba(0,240,255,0.5)"/>
+        <circle cx="132" cy="100" r="8" fill="url(#metalHead)" stroke="rgba(0,240,255,0.3)" stroke-width="1"/>
+        <circle cx="132" cy="100" r="3" fill="rgba(0,240,255,0.5)"/>
+        
+        <!-- Left Arm -->
+        <g>
+          <rect x="20" y="100" width="18" height="48" rx="9" fill="url(#metalArm)" stroke="rgba(0,240,255,0.15)" stroke-width="0.5"/>
+          <!-- Elbow -->
+          <circle cx="29" cy="150" r="6" fill="url(#metalHead)" stroke="rgba(0,240,255,0.2)" stroke-width="0.5"/>
+          <circle cx="29" cy="150" r="2.5" fill="rgba(0,240,255,0.4)"/>
+          <!-- Forearm -->
+          <rect x="22" y="155" width="14" height="38" rx="7" fill="url(#metalArm)" stroke="rgba(0,240,255,0.1)" stroke-width="0.5"/>
+          <!-- Hand -->
+          <circle cx="29" cy="196" r="8" fill="url(#metalHead)" stroke="rgba(0,240,255,0.2)" stroke-width="1"/>
+        </g>
+        
+        <!-- Right Arm (waving) -->
+        <g class="robot-arm-right">
+          <rect x="142" y="100" width="18" height="48" rx="9" fill="url(#metalArm)" stroke="rgba(0,240,255,0.15)" stroke-width="0.5"/>
+          <!-- Elbow -->
+          <circle cx="151" cy="150" r="6" fill="url(#metalHead)" stroke="rgba(0,240,255,0.2)" stroke-width="0.5"/>
+          <circle cx="151" cy="150" r="2.5" fill="rgba(0,240,255,0.4)"/>
+          <!-- Forearm -->
+          <rect x="144" y="155" width="14" height="38" rx="7" fill="url(#metalArm)" stroke="rgba(0,240,255,0.1)" stroke-width="0.5"/>
+          <!-- Hand -->
+          <circle cx="151" cy="196" r="8" fill="url(#metalHead)" stroke="rgba(0,240,255,0.2)" stroke-width="1"/>
+          <!-- Fingers pointing -->
+          <rect x="157" y="190" width="3" height="10" rx="1.5" fill="url(#metalArm)"/>
+          <rect x="152" y="188" width="3" height="12" rx="1.5" fill="url(#metalArm)" transform="rotate(-10 153 194)"/>
+        </g>
+        
+        <!-- Hip -->
+        <rect x="62" y="163" width="56" height="14" rx="7" fill="url(#metalArm)"/>
+        <circle cx="78" cy="170" r="3" fill="rgba(0,240,255,0.3)"/>
+        <circle cx="102" cy="170" r="3" fill="rgba(0,240,255,0.3)"/>
+        
+        <!-- Left Leg -->
+        <rect x="64" y="177" width="18" height="44" rx="9" fill="url(#metalLeg)" stroke="rgba(0,240,255,0.1)" stroke-width="0.5"/>
+        <circle cx="73" cy="222" r="5" fill="url(#metalHead)" stroke="rgba(0,240,255,0.2)" stroke-width="0.5"/>
+        <circle cx="73" cy="222" r="2" fill="rgba(0,240,255,0.4)"/>
+        <rect x="66" y="226" width="14" height="18" rx="7" fill="url(#metalLeg)"/>
+        <!-- Foot -->
+        <ellipse cx="73" cy="246" rx="14" ry="6" fill="url(#metalHead)" stroke="rgba(0,240,255,0.15)" stroke-width="0.5"/>
+        
+        <!-- Right Leg -->
+        <rect x="98" y="177" width="18" height="44" rx="9" fill="url(#metalLeg)" stroke="rgba(0,240,255,0.1)" stroke-width="0.5"/>
+        <circle cx="107" cy="222" r="5" fill="url(#metalHead)" stroke="rgba(0,240,255,0.2)" stroke-width="0.5"/>
+        <circle cx="107" cy="222" r="2" fill="rgba(0,240,255,0.4)"/>
+        <rect x="100" y="226" width="14" height="18" rx="7" fill="url(#metalLeg)"/>
+        <!-- Foot -->
+        <ellipse cx="107" cy="246" rx="14" ry="6" fill="url(#metalHead)" stroke="rgba(0,240,255,0.15)" stroke-width="0.5"/>
       </svg>
     </div>
     <div style="text-align:center;margin-top:8px;font-family:'Orbitron',monospace;font-size:10px;color:var(--cyan);letter-spacing:2px;text-shadow:0 0 10px rgba(0,240,255,0.5)">ASTYLEZ AI &bull; ONLINE</div>
@@ -408,6 +588,81 @@ return `
     <div class="feed-item"><div class="feed-dot" style="background:var(--cyan)"></div><div><div class="feed-text">New lead: Aisha Johnson - Color Change Wrap</div><div class="feed-time">4 hours ago</div></div></div>
     <div class="feed-item"><div class="feed-dot" style="background:var(--amber)"></div><div><div class="feed-text">Follow-up reminder: Carlos Mendez</div><div class="feed-time">6 hours ago</div></div></div>
     <div class="feed-item"><div class="feed-dot" style="background:var(--magenta)"></div><div><div class="feed-text">Appointment scheduled: Dana Chen - Tomorrow 2PM</div><div class="feed-time">8 hours ago</div></div></div>
+  </div>
+</div>
+
+<!-- Candlestick Chart -->
+<div class="chart-grid">
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">Service Revenue (Candlestick)</div>
+    <div class="candlestick-chart" id="candlestickChart"></div>
+  </div>
+  <div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="card-title">Live Audio Waveform</div>
+    <div class="waveform-container"><canvas class="waveform-canvas" id="waveformCanvas"></canvas></div>
+  </div>
+</div>
+
+<!-- Circular Gauges -->
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Performance Gauges</div>
+  <div class="gauge-grid">
+    <div class="gauge">
+      <div class="gauge-ring">
+        <svg width="90" height="90"><circle cx="45" cy="45" r="38" stroke="rgba(0,240,255,0.1)" stroke-width="6" fill="none"/><circle cx="45" cy="45" r="38" stroke="var(--cyan)" stroke-width="6" fill="none" stroke-dasharray="239" stroke-dashoffset="239" class="gauge-fill" data-target="${239-(convRate/100)*239}" stroke-linecap="round"/></svg>
+        <div class="gauge-value">${convRate}%</div>
+      </div>
+      <div class="gauge-label">CONVERSION</div>
+    </div>
+    <div class="gauge">
+      <div class="gauge-ring">
+        <svg width="90" height="90"><circle cx="45" cy="45" r="38" stroke="rgba(0,255,136,0.1)" stroke-width="6" fill="none"/><circle cx="45" cy="45" r="38" stroke="var(--green)" stroke-width="6" fill="none" stroke-dasharray="239" stroke-dashoffset="239" class="gauge-fill" data-target="${239-0.87*239}" stroke-linecap="round"/></svg>
+        <div class="gauge-value">87%</div>
+      </div>
+      <div class="gauge-label">SATISFACTION</div>
+    </div>
+    <div class="gauge">
+      <div class="gauge-ring">
+        <svg width="90" height="90"><circle cx="45" cy="45" r="38" stroke="rgba(255,136,0,0.1)" stroke-width="6" fill="none"/><circle cx="45" cy="45" r="38" stroke="var(--amber)" stroke-width="6" fill="none" stroke-dasharray="239" stroke-dashoffset="239" class="gauge-fill" data-target="${239-0.72*239}" stroke-linecap="round"/></svg>
+        <div class="gauge-value">72%</div>
+      </div>
+      <div class="gauge-label">EFFICIENCY</div>
+    </div>
+    <div class="gauge">
+      <div class="gauge-ring">
+        <svg width="90" height="90"><circle cx="45" cy="45" r="38" stroke="rgba(255,45,123,0.1)" stroke-width="6" fill="none"/><circle cx="45" cy="45" r="38" stroke="var(--magenta)" stroke-width="6" fill="none" stroke-dasharray="239" stroke-dashoffset="239" class="gauge-fill" data-target="${239-0.95*239}" stroke-linecap="round"/></svg>
+        <div class="gauge-value">95%</div>
+      </div>
+      <div class="gauge-label">UPTIME</div>
+    </div>
+    <div class="gauge">
+      <div class="gauge-ring">
+        <svg width="90" height="90"><circle cx="45" cy="45" r="38" stroke="rgba(179,102,255,0.1)" stroke-width="6" fill="none"/><circle cx="45" cy="45" r="38" stroke="#b366ff" stroke-width="6" fill="none" stroke-dasharray="239" stroke-dashoffset="239" class="gauge-fill" data-target="${239-0.63*239}" stroke-linecap="round"/></svg>
+        <div class="gauge-value">63%</div>
+      </div>
+      <div class="gauge-label">PIPELINE</div>
+    </div>
+  </div>
+</div>
+
+<!-- Scrolling Data Panel -->
+<div class="hud-card"><div class="corner-bl"></div><div class="corner-br"></div>
+  <div class="card-title">Live Market Data</div>
+  <div class="scroll-panel">
+    <div class="scroll-panel-inner" id="scrollPanel">
+      <div class="scroll-item"><span class="ticker">PPF</span><span class="value">$4,800</span><span class="change-up">&#9650; 18%</span></div>
+      <div class="scroll-item"><span class="ticker">TINT</span><span class="value">$650</span><span class="change-up">&#9650; 12%</span></div>
+      <div class="scroll-item"><span class="ticker">WRAP</span><span class="value">$3,200</span><span class="change-down">&#9660; 3%</span></div>
+      <div class="scroll-item"><span class="ticker">COAT</span><span class="value">$1,200</span><span class="change-up">&#9650; 24%</span></div>
+      <div class="scroll-item"><span class="ticker">RIMS</span><span class="value">$2,400</span><span class="change-up">&#9650; 8%</span></div>
+      <div class="scroll-item"><span class="ticker">DETAIL</span><span class="value">$350</span><span class="change-down">&#9660; 5%</span></div>
+      <div class="scroll-item"><span class="ticker">PPF</span><span class="value">$4,800</span><span class="change-up">&#9650; 18%</span></div>
+      <div class="scroll-item"><span class="ticker">TINT</span><span class="value">$650</span><span class="change-up">&#9650; 12%</span></div>
+      <div class="scroll-item"><span class="ticker">WRAP</span><span class="value">$3,200</span><span class="change-down">&#9660; 3%</span></div>
+      <div class="scroll-item"><span class="ticker">COAT</span><span class="value">$1,200</span><span class="change-up">&#9650; 24%</span></div>
+      <div class="scroll-item"><span class="ticker">RIMS</span><span class="value">$2,400</span><span class="change-up">&#9650; 8%</span></div>
+      <div class="scroll-item"><span class="ticker">DETAIL</span><span class="value">$350</span><span class="change-down">&#9660; 5%</span></div>
+    </div>
   </div>
 </div>`;
 }
@@ -791,6 +1046,164 @@ function clearData(){
 if(confirm('Clear ALL data? This cannot be undone.')){
 leads=[...DEFAULT_LEADS];appointments=[...DEFAULT_APPTS];chatHistory=[];
 saveData();localStorage.removeItem('az_business');renderContent();alert('Data reset to defaults.');}}
+
+// ===== SOUND EFFECTS =====
+const AudioCtx=window.AudioContext||window.webkitAudioContext;
+let audioCtx=null;
+function initAudio(){if(!audioCtx)audioCtx=new AudioCtx();}
+function playClick(){
+  initAudio();if(!audioCtx)return;
+  const osc=audioCtx.createOscillator();const gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.type='sine';osc.frequency.setValueAtTime(1200,audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(600,audioCtx.currentTime+0.08);
+  gain.gain.setValueAtTime(0.15,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.1);
+  osc.start();osc.stop(audioCtx.currentTime+0.1);
+}
+function playSuccess(){
+  initAudio();if(!audioCtx)return;
+  const osc=audioCtx.createOscillator();const gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.type='sine';osc.frequency.setValueAtTime(523,audioCtx.currentTime);
+  osc.frequency.setValueAtTime(659,audioCtx.currentTime+0.1);
+  osc.frequency.setValueAtTime(784,audioCtx.currentTime+0.2);
+  gain.gain.setValueAtTime(0.12,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.35);
+  osc.start();osc.stop(audioCtx.currentTime+0.35);
+}
+function playHover(){
+  initAudio();if(!audioCtx)return;
+  const osc=audioCtx.createOscillator();const gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.type='sine';osc.frequency.setValueAtTime(2000,audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.04,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.05);
+  osc.start();osc.stop(audioCtx.currentTime+0.05);
+}
+// Attach sound to buttons
+document.addEventListener('click',function(e){
+  if(e.target.closest('.btn')||e.target.closest('.nav-btn')||e.target.closest('.filter-btn')||e.target.closest('.quick-action')){playClick();}
+});
+document.addEventListener('mouseenter',function(e){
+  if(e.target.closest&&(e.target.closest('.nav-btn')||e.target.closest('.hud-card'))){playHover();}
+},true);
+
+// ===== WAVEFORM CANVAS ANIMATION =====
+let waveAnimId=null;
+function startWaveform(){
+  const canvas=document.getElementById('waveformCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth*2;canvas.height=canvas.offsetHeight*2;
+  ctx.scale(2,2);
+  const w=canvas.offsetWidth,h=canvas.offsetHeight;
+  let phase=0;
+  function drawWave(){
+    ctx.clearRect(0,0,w,h);
+    // Draw multiple wave layers
+    const waves=[
+      {amp:h*0.25,freq:0.02,speed:0.05,color:'rgba(0,240,255,0.6)',width:2},
+      {amp:h*0.18,freq:0.03,speed:0.03,color:'rgba(0,240,255,0.3)',width:1.5},
+      {amp:h*0.12,freq:0.05,speed:0.07,color:'rgba(123,47,255,0.3)',width:1},
+      {amp:h*0.08,freq:0.04,speed:0.04,color:'rgba(0,255,136,0.2)',width:1}
+    ];
+    waves.forEach(wave=>{
+      ctx.beginPath();ctx.strokeStyle=wave.color;ctx.lineWidth=wave.width;
+      for(let x=0;x<w;x++){
+        const y=h/2+Math.sin(x*wave.freq+phase*wave.speed)*wave.amp*Math.sin(x*0.005+phase*0.02);
+        if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    });
+    // Glow center line
+    ctx.beginPath();ctx.strokeStyle='rgba(0,240,255,0.1)';ctx.lineWidth=1;
+    ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+    phase++;
+    waveAnimId=requestAnimationFrame(drawWave);
+  }
+  drawWave();
+}
+
+// ===== CANDLESTICK CHART =====
+function renderCandlestick(){
+  const container=document.getElementById('candlestickChart');
+  if(!container)return;
+  // Generate random candlestick data (12 candles)
+  const candles=[];
+  let price=100;
+  for(let i=0;i<12;i++){
+    const open=price;
+    const close=open+(Math.random()-0.45)*20;
+    const high=Math.max(open,close)+(Math.random()*10);
+    const low=Math.min(open,close)-(Math.random()*10);
+    candles.push({open,close,high,low,bull:close>open});
+    price=close;
+  }
+  const allPrices=candles.flatMap(c=>[c.high,c.low]);
+  const maxP=Math.max(...allPrices),minP=Math.min(...allPrices);
+  const range=maxP-minP||1;
+  const chartH=150;
+  function priceToY(p){return chartH-((p-minP)/range)*chartH+10;}
+  
+  container.innerHTML=candles.map((c,i)=>{
+    const bodyTop=priceToY(Math.max(c.open,c.close));
+    const bodyBot=priceToY(Math.min(c.open,c.close));
+    const bodyH=Math.max(bodyBot-bodyTop,4);
+    const wickTop=priceToY(c.high);
+    const wickBot=priceToY(c.low);
+    return `<div class="candle" style="width:${100/12}%;height:${chartH+20}px">
+      <div class="candle-wick" style="top:${wickTop}px;height:${wickBot-wickTop}px"></div>
+      <div class="candle-body ${c.bull?'bull':'bear'}" style="top:${bodyTop}px;height:${bodyH}px;animation-delay:${i*0.1}s"></div>
+    </div>`;
+  }).join('');
+}
+
+// ===== GAUGE ANIMATION =====
+function animateGauges(){
+  document.querySelectorAll('.gauge-fill').forEach(g=>{
+    const target=g.getAttribute('data-target');
+    if(target)setTimeout(()=>{g.style.strokeDashoffset=target;},400);
+  });
+}
+
+// ===== LIVE UPDATING VALUES =====
+let liveInterval=null;
+function startLiveUpdates(){
+  if(liveInterval)clearInterval(liveInterval);
+  liveInterval=setInterval(()=>{
+    // Update random KPI values with subtle flicker
+    document.querySelectorAll('.kpi-value').forEach(el=>{
+      if(Math.random()>0.7){
+        el.style.textShadow='0 0 10px rgba(0,240,255,0.8)';
+        setTimeout(()=>{el.style.textShadow='';},200);
+      }
+    });
+    // Pulse a random gauge
+    document.querySelectorAll('.gauge-ring svg circle:last-child').forEach(c=>{
+      if(Math.random()>0.8){
+        c.style.filter='drop-shadow(0 0 6px currentColor)';
+        setTimeout(()=>{c.style.filter='';},500);
+      }
+    });
+  },2000);
+}
+
+// ===== ENHANCED RENDER CONTENT =====
+const origRenderContent=renderContent;
+renderContent=function(){
+  if(waveAnimId){cancelAnimationFrame(waveAnimId);waveAnimId=null;}
+  if(liveInterval){clearInterval(liveInterval);liveInterval=null;}
+  origRenderContent();
+  if(currentTab==='home'){
+    setTimeout(()=>{
+      startWaveform();
+      renderCandlestick();
+      animateGauges();
+      startLiveUpdates();
+    },200);
+  }
+};
 
 // ===== INIT =====
 const savedAccent=localStorage.getItem('az_accent');
